@@ -89,12 +89,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           async (snapshot) => {
             if (snapshot.exists()) {
               const data = snapshot.data();
+
+              // Don't overwrite a locally-completed quiz with a stale Firestore snapshot.
+              // This prevents the race condition where onSnapshot fires with old data
+              // BEFORE our setDoc write has propagated back from Firestore.
+              const storedSession = localStorage.getItem(STORAGE_KEY);
+              const localUser: UserProfile | null = storedSession ? JSON.parse(storedSession) : null;
+              const firestoreHasQuiz = Boolean(data.hasCompletedQuiz);
+              const localHasQuiz = Boolean(localUser?.hasCompletedQuiz);
+              // If local state says quiz done but Firestore says not yet — skip (stale snapshot)
+              if (localHasQuiz && !firestoreHasQuiz && localUser?.id === firebaseUser.uid) {
+                setIsLoading(false);
+                return;
+              }
+
               const profile: UserProfile = {
                 id: firebaseUser.uid,
                 name: data.name || firebaseUser.displayName || 'Coffee Enthusiast',
                 email: firebaseUser.email || '',
                 fayrouzPassId: data.fayrouzPassId || null,
-                hasCompletedQuiz: Boolean(data.hasCompletedQuiz),
+                hasCompletedQuiz: firestoreHasQuiz,
                 assignedDialect: data.assignedDialect || null,
                 assignedHouse: data.assignedHouse || null,
                 tasteProfile: data.tasteProfile || null,
@@ -359,26 +373,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       assignedHouse: house,
       tasteProfile: tasteData,
     };
+    // Save locally immediately so UI updates right away
     saveUserSession(updated);
 
-    // Sync to Cloud Firestore if online & logged in
-    if (isFirebaseConfigured && db && user.id && !user.id.startsWith('usr_')) {
+    // Sync to Cloud Firestore if Firebase is active with a real UID
+    // Use setDoc with merge:true so it works whether the doc exists or not
+    const isRealFirebaseUser = isFirebaseConfigured && db && user.id &&
+      !user.id.startsWith('usr_') && !user.id.startsWith('usr_g_') && !user.id.startsWith('usr_recalled_');
+
+    if (isRealFirebaseUser) {
       try {
-        const userRef = doc(db, 'users', user.id);
-        await updateDoc(userRef, {
+        const userRef = doc(db!, 'users', user.id);
+        await setDoc(userRef, {
           hasCompletedQuiz: true,
           fayrouzPassId: passId,
           assignedDialect: dialect,
           assignedHouse: house,
           tasteProfile: tasteData,
+          name: user.name,
+          email: user.email,
           updatedAt: serverTimestamp(),
-        });
+        }, { merge: true }); // merge:true creates the doc if it doesn't exist yet
       } catch (err) {
         console.warn('Failed to sync taste profile to Firestore:', err);
       }
     }
 
-    // Also update directory in local storage
+    // Also update local registered users list
     const storedUsersJson = localStorage.getItem('fayrouz_registered_users') || '[]';
     const registeredUsers: UserProfile[] = JSON.parse(storedUsersJson);
     const idx = registeredUsers.findIndex((u) => u.id === user.id);
