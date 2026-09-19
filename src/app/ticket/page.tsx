@@ -16,16 +16,19 @@ function BaristaTicketTerminal() {
   const searchParams = useSearchParams();
   const { language, t, direction } = useLanguage();
 
-  const shopId = searchParams.get('shop') || 'almond';
+  const shopId = searchParams.get('shop') || '';
   const drinkId = searchParams.get('drink') || '';
-  const passId = searchParams.get('pass') || 'JO-48291';
+  const passId = searchParams.get('pass') || 'JO-GUEST';
   const paramRatio = searchParams.get('ratio') || '';
 
   const [isBrewed, setIsBrewed] = useState(false);
   const [brewedTime, setBrewedTime] = useState<string | null>(null);
 
+  // If no shop/drink params, this page was opened directly — show a redirect card
+  const missingParams = !shopId || !drinkId;
+
   // Find Coffeehouse
-  const currentShop: CoffeeShop = 
+  const currentShop: CoffeeShop =
     COFFEE_SHOPS.find((s) => s.id === shopId) || COFFEE_SHOPS[0];
 
   // Find Drink
@@ -48,6 +51,34 @@ function BaristaTicketTerminal() {
       // safe fallback
     }
   };
+
+  // Guard: if page opened directly without ticket params, redirect user to the app
+  if (missingParams) {
+    return (
+      <div className="min-h-screen bg-espresso-950 flex flex-col items-center justify-center gap-6 p-8 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gold-500/20 border border-gold-500/40 text-gold-400">
+          <AlertCircle className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-xl font-serif font-bold text-parchment-50">
+            {language === 'ar' ? 'لا يوجد طلب نشط' : 'No Active Order'}
+          </h1>
+          <p className="text-sm text-parchment-300/70 max-w-xs">
+            {language === 'ar'
+              ? 'هذه الصفحة تُفتح تلقائياً عند مسح كود QR من تذكرة الطلب داخل التطبيق.'
+              : 'This page opens automatically when you scan a QR code from a drink ticket inside the app.'}
+          </p>
+        </div>
+        <Link
+          href="/"
+          className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-gold-500 to-gold-600 text-espresso-950 text-sm font-bold shadow-lg"
+        >
+          <Coffee className="w-4 h-4" />
+          <span>{language === 'ar' ? 'العودة إلى فيروز' : 'Back to Fayrouz'}</span>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div dir={direction} className="min-h-screen bg-espresso-950 text-parchment-50 p-4 sm:p-8 flex flex-col justify-between max-w-2xl mx-auto space-y-6">
