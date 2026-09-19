@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { ProfileModal } from '@/components/auth/ProfileModal';
@@ -59,15 +59,41 @@ export default function Home() {
   // Palate 3+1 matches calculated dynamically
   const matches = calculatePalateMatches(user?.tasteProfile, currentShopDrinks);
 
-  // Live Guest Teaser Match (previews top drink for chosen mood instantly)
-  const previewMatch = calculatePalateMatches(
-    {
-      milkPreference: 'oat',
-      flavorPreference: guestTasteMood,
-      temperature: 'hot',
-      intensity: 'medium',
+  // Holistic sensory profile presets for the 4 mood pills
+  const TASTE_MOOD_PROFILES = {
+    chocolate_nutty: {
+      milkPreference: 'oat' as const,
+      flavorPreference: 'chocolate_nutty' as const,
+      temperature: 'hot' as const,
+      intensity: 'medium' as const,
       dietaryFlags: [],
     },
+    fruity_floral: {
+      milkPreference: 'black' as const,
+      flavorPreference: 'fruity_floral' as const,
+      temperature: 'any' as const,
+      intensity: 'light' as const,
+      dietaryFlags: [],
+    },
+    sweet_caramel: {
+      milkPreference: 'any' as const,
+      flavorPreference: 'sweet_caramel' as const,
+      temperature: 'any' as const,
+      intensity: 'medium' as const,
+      dietaryFlags: [],
+    },
+    balanced: {
+      milkPreference: 'any' as const,
+      flavorPreference: 'balanced' as const,
+      temperature: 'any' as const,
+      intensity: 'medium' as const,
+      dietaryFlags: [],
+    },
+  };
+
+  // Live Guest Teaser Match (previews top drink for chosen mood instantly)
+  const previewMatch = calculatePalateMatches(
+    TASTE_MOOD_PROFILES[guestTasteMood],
     currentShopDrinks
   ).perfectMatch;
 
@@ -251,76 +277,121 @@ export default function Home() {
               </div>
 
               {/* 4 Tactile Mood Pills */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                {[
-                  { id: 'chocolate_nutty', labelAr: 'شوكولاتة وبندق', labelEn: 'Warm Cocoa & Nutty', badge: '🍫' },
-                  { id: 'fruity_floral', labelAr: 'توت بري وياسمين', labelEn: 'Wild Berries & Floral', badge: '🍓' },
-                  { id: 'sweet_caramel', labelAr: 'كراميل وعسل مشرقي', labelEn: 'Honey & Caramel', badge: '🍯' },
-                  { id: 'balanced', labelAr: 'متوازن ومعتدل', labelEn: 'Clean & Balanced', badge: '⚖️' },
-                ].map((mood) => {
-                  const isSelected = guestTasteMood === mood.id;
-                  return (
-                    <button
-                      key={mood.id}
-                      type="button"
-                      onClick={() => setGuestTasteMood(mood.id as any)}
-                      className={`min-h-[48px] flex items-center justify-center gap-2 p-2.5 rounded-2xl border text-xs font-semibold transition-all cursor-pointer ${
-                        isSelected
-                          ? 'border-gold-400 bg-gold-500/20 text-gold-300 shadow-md ring-1 ring-gold-400/50'
-                          : 'border-espresso-700/80 bg-espresso-950/60 text-parchment-300 hover:border-gold-500/30'
-                      }`}
-                    >
-                      <span className="text-base">{mood.badge}</span>
-                      <span className="text-[11px] truncate">{language === 'ar' ? mood.labelAr : mood.labelEn}</span>
-                    </button>
-                  );
-                })}
+              <div className="space-y-2.5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  {[
+                    { id: 'chocolate_nutty', labelAr: 'شوكولاتة وبندق', labelEn: 'Warm Cocoa & Nutty', badge: '🍫', hintAr: 'عمق الكاكاو والمكسرات المحمصة', hintEn: 'Rich roasted cocoa & toasted hazelnut' },
+                    { id: 'fruity_floral', labelAr: 'توت بري وياسمين', labelEn: 'Wild Berries & Floral', badge: '🍓', hintAr: 'نقاء فاكهي وزهري طبيعي ساطع', hintEn: 'Radiant wild berries & jasmine bloom' },
+                    { id: 'sweet_caramel', labelAr: 'كراميل وعسل مشرقي', labelEn: 'Honey & Caramel', badge: '🍯', hintAr: 'دفء الحلاوة المشرقية الفاخرة', hintEn: 'Velvety honey & caramelized comfort' },
+                    { id: 'balanced', labelAr: 'متوازن ومعتدل', labelEn: 'Clean & Balanced', badge: '⚖️', hintAr: 'توازن سلس ونقاء بدون مرارة', hintEn: 'Smooth equilibrium & clean crisp finish' },
+                  ].map((mood) => {
+                    const isSelected = guestTasteMood === mood.id;
+                    return (
+                      <motion.button
+                        key={mood.id}
+                        type="button"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setGuestTasteMood(mood.id as any)}
+                        className={`min-h-[50px] flex items-center justify-center gap-2 p-3 rounded-2xl border text-xs font-semibold transition-all cursor-pointer relative overflow-hidden ${
+                          isSelected
+                            ? 'border-gold-400 bg-gold-500/25 text-gold-200 shadow-lg shadow-gold-500/15 ring-2 ring-gold-400/60'
+                            : 'border-espresso-700/80 bg-espresso-950/60 text-parchment-300 hover:border-gold-500/40 hover:bg-espresso-900/60'
+                        }`}
+                      >
+                        <span className="text-base select-none">{mood.badge}</span>
+                        <span className="text-[11px] truncate font-medium">
+                          {language === 'ar' ? mood.labelAr : mood.labelEn}
+                        </span>
+                        {isSelected && (
+                          <motion.span
+                            layoutId="activeMoodGlow"
+                            className="absolute inset-0 bg-gradient-to-r from-gold-500/10 via-gold-400/20 to-gold-500/10 pointer-events-none"
+                            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                          />
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+
+                {/* Real-time sensory hint */}
+                <div className="text-[11px] text-parchment-300/75 flex items-center justify-center sm:justify-start gap-1.5 px-1 font-sans">
+                  <span className="text-gold-400 font-bold">✨</span>
+                  <span>
+                    {language === 'ar'
+                      ? guestTasteMood === 'chocolate_nutty'
+                        ? 'ذائقة الكاكاو والبندق: مطابقة المشروبات الغنية بالشوكولاتة والمكسرات المحمصة'
+                        : guestTasteMood === 'fruity_floral'
+                        ? 'ذائقة التوت والزهور: مطابقة محاصيل القهوة المختصة الفاكهية والزهرية الفردية'
+                        : guestTasteMood === 'sweet_caramel'
+                        ? 'ذائقة الكراميل والعسل: مطابقة المشروبات الحريرية ذات الحلاوة الطبيعية'
+                        : 'ذائقة التوازن والنقاء: مطابقة خيارات التقطير البارد والإسبريسو المتوازن'
+                      : guestTasteMood === 'chocolate_nutty'
+                      ? 'Cocoa & Nutty profile: Matching deep roasted cocoa and artisan nutty microfoams'
+                      : guestTasteMood === 'fruity_floral'
+                      ? 'Berries & Floral profile: Matching radiant single-origin lots with tea-like clarity'
+                      : guestTasteMood === 'sweet_caramel'
+                      ? 'Honey & Caramel profile: Matching comforting honeyed indulgences and rich sweetness'
+                      : 'Clean & Balanced profile: Matching smooth cold drip and harmonious equilibrium brews'}
+                  </span>
+                </div>
               </div>
 
-              {/* Live Preview Match Result Card */}
-              {previewMatch && (
-                <motion.div
-                  key={previewMatch.drink.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="rounded-2xl border border-gold-500/30 bg-espresso-950/80 p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 shadow-xl"
-                >
-                  <SensoryCupVisual
-                    temperature={previewMatch.drink.temperature}
-                    type={previewMatch.drink.type}
-                    roast={previewMatch.drink.roast}
-                    milk={previewMatch.drink.milk}
-                    size="sm"
-                  />
+              {/* Live Preview Match Result Card with AnimatePresence */}
+              <AnimatePresence mode="wait">
+                {previewMatch && (
+                  <motion.div
+                    key={previewMatch.drink.id}
+                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -12, scale: 0.98 }}
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    className="rounded-2xl border border-gold-500/35 bg-espresso-950/90 p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 shadow-2xl relative overflow-hidden group"
+                  >
+                    {/* Subtle Gold Shimmer behind active card */}
+                    <div className="absolute -top-12 -left-12 w-28 h-28 bg-gold-500/10 rounded-full blur-2xl pointer-events-none" />
 
-                  <div className="flex-1 space-y-1.5 text-center sm:text-left rtl:sm:text-right">
-                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 font-bold border border-gold-500/30">
-                        {previewMatch.score}% {language === 'ar' ? 'توافق متوقع' : 'Expected Match'}
-                      </span>
-                      <span className="text-xs font-serif font-bold text-gold-400">
-                        {previewMatch.drink.priceJOD.toFixed(2)} {language === 'ar' ? 'د.أ' : 'JOD'}
-                      </span>
+                    <SensoryCupVisual
+                      temperature={previewMatch.drink.temperature}
+                      type={previewMatch.drink.type}
+                      roast={previewMatch.drink.roast}
+                      milk={previewMatch.drink.milk}
+                      size="sm"
+                    />
+
+                    <div className="flex-1 space-y-1.5 text-center sm:text-left rtl:sm:text-right">
+                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-gold-500/20 text-gold-300 font-bold border border-gold-500/35 shadow-sm">
+                          {previewMatch.score}% {language === 'ar' ? 'توافق متوقع' : 'Expected Match'}
+                        </span>
+                        <span className="text-xs font-serif font-bold text-gold-400">
+                          {previewMatch.drink.priceJOD.toFixed(2)} {language === 'ar' ? 'د.أ' : 'JOD'}
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-espresso-900 text-parchment-300 border border-espresso-700">
+                          {previewMatch.drink.roast.toUpperCase()} ROAST
+                        </span>
+                      </div>
+
+                      <h4 className="text-lg font-serif font-bold text-parchment-50 group-hover:text-gold-200 transition-colors">
+                        {language === 'ar' ? previewMatch.drink.nameAr : previewMatch.drink.name}
+                      </h4>
+
+                      <p className="text-xs text-parchment-300/85 line-clamp-2 leading-relaxed">
+                        &ldquo;{language === 'ar' ? previewMatch.drink.flavorNotesPlainAr : previewMatch.drink.flavorNotesPlain}&rdquo;
+                      </p>
                     </div>
 
-                    <h4 className="text-lg font-serif font-bold text-parchment-50">
-                      {language === 'ar' ? previewMatch.drink.nameAr : previewMatch.drink.name}
-                    </h4>
-
-                    <p className="text-xs text-parchment-300/80 line-clamp-2">
-                      &ldquo;{language === 'ar' ? previewMatch.drink.flavorNotesPlainAr : previewMatch.drink.flavorNotesPlain}&rdquo;
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => handleSelectDrink(previewMatch.drink)}
-                    className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-4 py-2.5 text-xs font-bold text-espresso-950 shadow-md hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer shrink-0 w-full sm:w-auto"
-                  >
-                    <Coffee className="w-3.5 h-3.5" />
-                    <span>{language === 'ar' ? 'طلب فوري ☕' : 'Order Now ☕'}</span>
-                  </button>
-                </motion.div>
-              )}
+                    <button
+                      onClick={() => handleSelectDrink(previewMatch.drink)}
+                      className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-4 py-2.5 text-xs font-bold text-espresso-950 shadow-md hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer shrink-0 w-full sm:w-auto"
+                    >
+                      <Coffee className="w-3.5 h-3.5" />
+                      <span>{language === 'ar' ? 'طلب فوري ☕' : 'Order Now ☕'}</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Primary Onboarding CTA */}
               <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
