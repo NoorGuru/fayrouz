@@ -46,7 +46,7 @@ export function AppShell({
         {/* Minimal Luxury Footer */}
         <footer className="border-t border-espresso-800/80 bg-espresso-950/80 py-6 text-center text-xs text-parchment-300/50">
           <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p>© {new Date().getFullYear()} Fayrouz (فيروز) — System 1 Decision Architecture</p>
+            <p>© {new Date().getFullYear()} Fayrouz (فيروز) — Specialty Coffee Matcher</p>
             <p className="text-[11px] text-gold-400/60 font-mono">fayrouz.bynoor.io</p>
           </div>
         </footer>

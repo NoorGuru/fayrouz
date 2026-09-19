@@ -41,7 +41,7 @@ export function Header({
               </span>
             </div>
             <span className="text-[10px] tracking-wider text-parchment-300/70 uppercase">
-              System 1 Coffee Matcher
+              Specialty Coffee Matcher
             </span>
           </div>
         </div>

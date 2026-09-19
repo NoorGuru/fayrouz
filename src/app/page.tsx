@@ -41,20 +41,15 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Pre-visit CTA Card */}
+        {/* Pre-visit Feature Highlights */}
         <div className="w-full glass-panel-glow rounded-2xl p-6 sm:p-8 space-y-6 text-left">
-          <div className="flex items-center justify-between border-b border-gold-500/15 pb-4">
-            <div>
-              <h2 className="text-lg font-bold text-parchment-50 font-serif">
-                {language === 'ar' ? 'جاهز قبل ما تروح؟' : 'Pre-Visit Onboarding'}
-              </h2>
-              <p className="text-xs text-parchment-300/70">
-                {language === 'ar' ? 'افتح حسابك واعمل اختبار الذوق السريع من البيت' : 'Create your profile & take the sensory quiz from home'}
-              </p>
-            </div>
-            <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-fayrouz-500/20 text-fayrouz-400 border border-fayrouz-500/30">
-              Task 2 Ready
-            </span>
+          <div className="border-b border-gold-500/15 pb-4">
+            <h2 className="text-lg font-bold text-parchment-50 font-serif">
+              {language === 'ar' ? 'جاهز قبل ما تروح؟' : 'Ready Before You Go?'}
+            </h2>
+            <p className="text-xs text-parchment-300/70">
+              {language === 'ar' ? 'افتح حسابك واعمل اختبار الذوق السريع من البيت' : 'Create your profile & discover your coffee dialect from home'}
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -71,7 +66,7 @@ export default function Home() {
             <div className="rounded-xl border border-espresso-700 bg-espresso-900/60 p-3.5 space-y-1.5">
               <ShieldCheck className="w-4 h-4 text-fayrouz-400" />
               <div className="font-semibold text-parchment-100">
-                {language === 'ar' ? 'باسبور دائم' : 'Persistent Account'}
+                {language === 'ar' ? 'باسبور دائم' : 'Persistent Pass'}
               </div>
               <div className="text-parchment-400 text-[11px]">
                 {language === 'ar' ? 'باسبورك الذوقي معك وين ما رحت، بعنبر وتراث وغيرهم' : 'Carry your taste passport to Ambar, Turath & more'}
@@ -81,7 +76,7 @@ export default function Home() {
             <div className="rounded-xl border border-espresso-700 bg-espresso-900/60 p-3.5 space-y-1.5">
               <Award className="w-4 h-4 text-amber-400" />
               <div className="font-semibold text-parchment-100">
-                {language === 'ar' ? 'نظام JEV الذكي' : 'JEV Decision Engine'}
+                {language === 'ar' ? 'مطابقة ذكية' : 'Smart Palate Match'}
               </div>
               <div className="text-parchment-400 text-[11px]">
                 {language === 'ar' ? '٣ خيارات مضمونة + ١ مغامرة، وبترتاح من الحيرة' : '3 safe matches + 1 adventure pick'}
