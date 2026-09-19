@@ -83,25 +83,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (firebaseUser && db) {
         const userRef = doc(db, 'users', firebaseUser.uid);
 
-        // Real-time Firestore document listener
-        const unsubscribeDoc = onSnapshot(userRef, async (snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.data();
-            const profile: UserProfile = {
-              id: firebaseUser.uid,
-              name: data.name || firebaseUser.displayName || 'Coffee Enthusiast',
-              email: firebaseUser.email || '',
-              fayrouzPassId: data.fayrouzPassId || null,
-              hasCompletedQuiz: Boolean(data.hasCompletedQuiz),
-              assignedDialect: data.assignedDialect || null,
-              assignedHouse: data.assignedHouse || null,
-              tasteProfile: data.tasteProfile || null,
-              createdAt: data.createdAt ? new Date(data.createdAt.seconds * 1000).toISOString() : new Date().toISOString(),
-            };
-            saveUserSession(profile);
-          } else {
-            // Document doesn't exist yet, initialize it
-            const newProfile: UserProfile = {
+        // Real-time Firestore document listener with offline/error resiliency
+        const unsubscribeDoc = onSnapshot(
+          userRef,
+          async (snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.data();
+              const profile: UserProfile = {
+                id: firebaseUser.uid,
+                name: data.name || firebaseUser.displayName || 'Coffee Enthusiast',
+                email: firebaseUser.email || '',
+                fayrouzPassId: data.fayrouzPassId || null,
+                hasCompletedQuiz: Boolean(data.hasCompletedQuiz),
+                assignedDialect: data.assignedDialect || null,
+                assignedHouse: data.assignedHouse || null,
+                tasteProfile: data.tasteProfile || null,
+                createdAt: data.createdAt ? new Date(data.createdAt.seconds * 1000).toISOString() : new Date().toISOString(),
+              };
+              saveUserSession(profile);
+            } else {
+              // Document doesn't exist yet, initialize it
+              const newProfile: UserProfile = {
+                id: firebaseUser.uid,
+                name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'User'),
+                email: firebaseUser.email || '',
+                fayrouzPassId: null,
+                hasCompletedQuiz: false,
+                createdAt: new Date().toISOString(),
+              };
+              try {
+                await setDoc(userRef, {
+                  ...newProfile,
+                  createdAt: serverTimestamp(),
+                  updatedAt: serverTimestamp(),
+                });
+              } catch (err) {
+                console.warn('Firestore doc creation skipped (offline or pending database):', err);
+              }
+              saveUserSession(newProfile);
+            }
+            setIsLoading(false);
+          },
+          (err) => {
+            console.warn('Firestore realtime listener offline or uninitialized, using Auth profile:', err);
+            const fallbackProfile: UserProfile = {
               id: firebaseUser.uid,
               name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'User'),
               email: firebaseUser.email || '',
@@ -109,19 +134,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               hasCompletedQuiz: false,
               createdAt: new Date().toISOString(),
             };
-            try {
-              await setDoc(userRef, {
-                ...newProfile,
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp(),
-              });
-            } catch (err) {
-              console.warn('Failed to initialize Firestore user doc:', err);
-            }
-            saveUserSession(newProfile);
+            saveUserSession(fallbackProfile);
+            setIsLoading(false);
           }
-          setIsLoading(false);
-        });
+        );
 
         return () => unsubscribeDoc();
       } else {
@@ -254,22 +270,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isFirebaseConfigured && auth && googleProvider) {
       try {
         const res = await signInWithPopup(auth, googleProvider);
-        if (res.user && db) {
-          const userRef = doc(db, 'users', res.user.uid);
-          const existingDoc = await getDoc(userRef);
-          if (!existingDoc.exists()) {
-            await setDoc(userRef, {
-              name: res.user.displayName || 'Specialty Lover',
-              email: res.user.email || '',
-              fayrouzPassId: user?.fayrouzPassId || null,
-              hasCompletedQuiz: Boolean(user?.hasCompletedQuiz),
-              assignedDialect: user?.assignedDialect || null,
-              assignedHouse: user?.assignedHouse || null,
-              tasteProfile: user?.tasteProfile || null,
-              createdAt: serverTimestamp(),
-              updatedAt: serverTimestamp(),
-            });
+        if (res.user) {
+          // Attempt non-blocking Firestore user profile sync
+          if (db) {
+            try {
+              const userRef = doc(db, 'users', res.user.uid);
+              const existingDoc = await getDoc(userRef);
+              if (!existingDoc.exists()) {
+                await setDoc(userRef, {
+                  name: res.user.displayName || 'Specialty Lover',
+                  email: res.user.email || '',
+                  fayrouzPassId: user?.fayrouzPassId || null,
+                  hasCompletedQuiz: Boolean(user?.hasCompletedQuiz),
+                  assignedDialect: user?.assignedDialect || null,
+                  assignedHouse: user?.assignedHouse || null,
+                  tasteProfile: user?.tasteProfile || null,
+                  createdAt: serverTimestamp(),
+                  updatedAt: serverTimestamp(),
+                });
+              }
+            } catch (firestoreErr) {
+              console.warn('Firestore doc check failed (offline or pending database creation):', firestoreErr);
+            }
           }
+
+          // Immediate session update with authenticated Google user
+          const activeUser: UserProfile = {
+            id: res.user.uid,
+            name: res.user.displayName || (res.user.email ? res.user.email.split('@')[0] : 'Specialty Lover'),
+            email: res.user.email || '',
+            fayrouzPassId: user?.fayrouzPassId || null,
+            hasCompletedQuiz: Boolean(user?.hasCompletedQuiz),
+            assignedDialect: user?.assignedDialect || null,
+            assignedHouse: user?.assignedHouse || null,
+            tasteProfile: user?.tasteProfile || null,
+            createdAt: new Date().toISOString(),
+          };
+          saveUserSession(activeUser);
+          return { success: true };
         }
         return { success: true };
       } catch (err: unknown) {
