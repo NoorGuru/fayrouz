@@ -116,13 +116,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               };
               saveUserSession(profile);
             } else {
-              // Document doesn't exist yet, initialize it
+              // Document doesn't exist yet, initialize it.
+              // But first check: did the user just complete the quiz locally?
+              // If so, carry that data over instead of resetting to empty.
+              const storedSession = localStorage.getItem(STORAGE_KEY);
+              const localUser: UserProfile | null = storedSession ? JSON.parse(storedSession) : null;
+              const localBelongsToThisUser = localUser?.id === firebaseUser.uid;
+
               const newProfile: UserProfile = {
                 id: firebaseUser.uid,
-                name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'User'),
+                name: localBelongsToThisUser ? (localUser!.name || firebaseUser.displayName || 'User') : (firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'User')),
                 email: firebaseUser.email || '',
-                fayrouzPassId: null,
-                hasCompletedQuiz: false,
+                // Preserve quiz data if it already exists locally for this user
+                fayrouzPassId: localBelongsToThisUser ? (localUser!.fayrouzPassId ?? null) : null,
+                hasCompletedQuiz: localBelongsToThisUser ? Boolean(localUser!.hasCompletedQuiz) : false,
+                assignedDialect: localBelongsToThisUser ? (localUser!.assignedDialect ?? null) : null,
+                assignedHouse: localBelongsToThisUser ? (localUser!.assignedHouse ?? null) : null,
+                tasteProfile: localBelongsToThisUser ? (localUser!.tasteProfile ?? null) : null,
                 createdAt: new Date().toISOString(),
               };
               try {
@@ -140,6 +150,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           },
           (err) => {
             console.warn('Firestore realtime listener offline or uninitialized, using Auth profile:', err);
+            // Check if there's an existing session for this user in localStorage
+            // to avoid wiping a completed quiz when Firestore is temporarily unreachable
+            const storedSession = localStorage.getItem(STORAGE_KEY);
+            const localUser: UserProfile | null = storedSession ? JSON.parse(storedSession) : null;
+            if (localUser?.id === firebaseUser.uid) {
+              // Keep whatever local data we have — don't overwrite with empty fallback
+              setIsLoading(false);
+              return;
+            }
             const fallbackProfile: UserProfile = {
               id: firebaseUser.uid,
               name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'User'),
