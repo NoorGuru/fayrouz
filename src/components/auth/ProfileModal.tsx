@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { X, Sparkles, LogOut, RotateCcw, CheckCircle2, Award } from 'lucide-react';
@@ -15,16 +16,30 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
   const { user, logout } = useAuth();
   const { t, language } = useLanguage();
 
-  if (!isOpen || !user) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div
-        className="relative w-full max-w-md rounded-2xl glass-panel-glow border border-gold-500/30 bg-espresso-900/95 p-6 sm:p-8 shadow-2xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Ambient Top Glow */}
-        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-40 w-60 rounded-full bg-gold-500/15 blur-2xl" />
+    <AnimatePresence>
+      {isOpen && user && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-espresso-950/85 backdrop-blur-md"
+          />
+
+          {/* Modal Card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 15 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 320 }}
+            className="relative z-10 w-full max-w-md rounded-3xl glass-panel-glow border border-gold-500/35 bg-espresso-900/95 p-6 sm:p-8 shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Ambient Top Glow */}
+            <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-40 w-60 rounded-full bg-gold-500/15 blur-2xl" />
 
         {/* Close Button */}
         <button
@@ -125,7 +140,9 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
             <span>{t('signOut')}</span>
           </button>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

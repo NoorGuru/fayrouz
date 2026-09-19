@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { ProfileModal } from '@/components/auth/ProfileModal';
@@ -51,10 +52,22 @@ export default function Home() {
       onOpenVenueModal={() => setIsVenueModalOpen(true)}
       onOpenAuthModal={() => setIsAuthModalOpen(true)}
       onOpenProfileModal={() => setIsProfileModalOpen(true)}
+      onOpenQuizModal={() => {
+        if (user?.hasCompletedQuiz) {
+          setIsProfileModalOpen(true);
+        } else {
+          setIsQuizModalOpen(true);
+        }
+      }}
     >
-      <div className="flex flex-col items-center text-center py-6 sm:py-12 max-w-2xl mx-auto space-y-8">
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex flex-col items-center text-center py-4 sm:py-10 max-w-2xl mx-auto space-y-6 sm:space-y-8"
+      >
         {/* Brand Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs font-medium backdrop-blur-sm">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs font-medium backdrop-blur-sm shadow-sm">
           <Sparkles className="w-3.5 h-3.5 animate-pulse" />
           <span>{t('brandTagline')}</span>
         </div>
@@ -252,7 +265,7 @@ export default function Home() {
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Auth Modal (Sign Up / Sign In) */}
       <AuthModal

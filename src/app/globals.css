@@ -43,12 +43,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Antique Arabic Typography Polish: comfortable line-height to prevent diacritic clipping */
 [dir="rtl"], [lang="ar"] {
   font-family: var(--font-amiri), "Amiri", Georgia, serif;
+  line-height: 1.7;
 }
 
 [dir="rtl"] .font-serif, [lang="ar"] .font-serif {
   font-family: var(--font-ruqaa), var(--font-amiri), serif;
+  line-height: 1.5;
 }
 
 /* Luxury Card Glass Effect */
@@ -67,8 +70,29 @@ body {
   box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.1);
 }
 
-.gold-border-gradient {
-  border-image: linear-gradient(to right, #D4AF37, #DFC04E, transparent) 1;
+/* Perforated Counter Ticket Notches */
+.ticket-perforated {
+  position: relative;
+}
+.ticket-perforated::before,
+.ticket-perforated::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #120D0A;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+.ticket-perforated::before {
+  left: -10px;
+  border-right: 2px solid rgba(212, 175, 55, 0.4);
+}
+.ticket-perforated::after {
+  right: -10px;
+  border-left: 2px solid rgba(212, 175, 55, 0.4);
 }
 
 /* Custom Scrollbar for Luxury Experience */
