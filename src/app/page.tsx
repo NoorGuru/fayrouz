@@ -7,6 +7,7 @@ import { ProfileModal } from '@/components/auth/ProfileModal';
 import { SensoryQuizModal } from '@/components/quiz/SensoryQuizModal';
 import { VenueSelectorModal } from '@/components/venue/VenueSelectorModal';
 import { MatchView } from '@/components/match/MatchView';
+import { BaristaTicketModal } from '@/components/ticket/BaristaTicketModal';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { COFFEE_SHOPS, CoffeeShop, MENU_ITEMS, MenuItem } from '@/data/coffeehouses';
@@ -24,6 +25,10 @@ export default function Home() {
   const [isVenueModalOpen, setIsVenueModalOpen] = useState(false);
   const [showMatches, setShowMatches] = useState(false);
 
+  // Task 6 Barista Ticket Modal State
+  const [selectedTicketDrink, setSelectedTicketDrink] = useState<MenuItem | null>(null);
+  const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
+
   const handleStartQuiz = () => {
     setIsQuizModalOpen(true);
   };
@@ -34,12 +39,8 @@ export default function Home() {
   const matches = calculatePalateMatches(user?.tasteProfile, currentShopDrinks);
 
   const handleSelectDrink = (drink: MenuItem) => {
-    // Ready for Task 6 Barista Ticket
-    alert(
-      language === 'ar'
-        ? `تم اختيار ${drink.nameAr}! سيتم فتح تذكرة الباريستا ومعايير الاستخلاص في الخطوة القادمة (Task 6).`
-        : `Selected ${drink.name}! The full-screen Barista Order Ticket & extraction specs will open in Task 6.`
-    );
+    setSelectedTicketDrink(drink);
+    setIsTicketModalOpen(true);
   };
 
   const isMatchedViewActive = user?.hasCompletedQuiz || showMatches;
@@ -285,6 +286,15 @@ export default function Home() {
         onSelectShop={(shop) => {
           setSelectedShop(shop);
         }}
+      />
+
+      {/* Barista Ticket Modal (Task 6) */}
+      <BaristaTicketModal
+        isOpen={isTicketModalOpen}
+        onClose={() => setIsTicketModalOpen(false)}
+        drink={selectedTicketDrink}
+        coffeeShop={selectedShop}
+        user={user}
       />
     </AppShell>
   );
