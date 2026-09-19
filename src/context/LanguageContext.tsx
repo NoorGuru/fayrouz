@@ -89,6 +89,15 @@ export const translations: Translations = {
   orGoogle: { en: 'Continue with Google', ar: 'كمّل بحساب Google' },
   haveAccount: { en: 'Already have an account? Sign in', ar: 'عندك حساب من قبل؟ سجّل دخولك' },
   needAccount: { en: "Don't have an account? Create one", ar: 'جديد معنا؟ افتح حسابك بدقيقة' },
+  passRecallTab: { en: 'Pass Recall', ar: 'استرجاع باسبور' },
+  passRecallTitle: { en: 'Counter Instant Recall', ar: 'استرجاع الباسبور عند الكاونتر' },
+  passRecallSubtext: { 
+    en: 'Enter your 5-digit member code for instant palate dial-in.', 
+    ar: 'أدخل رمزك المكوّن من ٥ أرقام لاسترجاع ذائقتك فوراً بدون كتابة إيميل.' 
+  },
+  passRecallDigits: { en: '5-Digit Code', ar: 'رمزك المكوّن من ٥ أرقام' },
+  retrievePalateBtn: { en: 'Retrieve Palate', ar: 'استرجاع ذائقتي' },
+  passRecallPlaceholder: { en: '48291', ar: '48291' },
 };
 
 interface LanguageContextType {

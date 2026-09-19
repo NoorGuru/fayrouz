@@ -325,12 +325,12 @@ export function computeCoffeeDialect(taste: {
   const dialect = DIALECT_REGISTRY[code] || DIALECT_REGISTRY['TDSR'];
   const house = HOUSES[dialect.house] || HOUSES.terroir;
 
-  // Deterministic Pass ID (FYZ-XXXX)
-  const seed = `${code}-${taste.flavorPreference}-${taste.intensity}`;
+  // Deterministic Pass ID (JO-XXXXX: Country Code + 5 Digits)
+  const seed = `${code}-${taste.flavorPreference}-${taste.intensity}-${taste.milkPreference || 'none'}`;
   const hash = Math.abs(
-    seed.split('').reduce((acc, char) => (acc * 31 + char.charCodeAt(0)) % 9000, 1000)
-  ) + 1000;
-  const passId = `FYZ-${hash}`;
+    seed.split('').reduce((acc, char) => (acc * 33 + char.charCodeAt(0)) % 90000, 10000)
+  ) + 10000;
+  const passId = `JO-${hash}`;
 
   return { code, dialect, house, passId };
 }

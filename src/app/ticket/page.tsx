@@ -18,7 +18,7 @@ function BaristaTicketTerminal() {
 
   const shopId = searchParams.get('shop') || 'almond';
   const drinkId = searchParams.get('drink') || '';
-  const passId = searchParams.get('pass') || 'FYZ-7294';
+  const passId = searchParams.get('pass') || 'JO-48291';
   const paramRatio = searchParams.get('ratio') || '';
 
   const [isBrewed, setIsBrewed] = useState(false);

@@ -15,7 +15,11 @@ import {
   getDoc, 
   updateDoc, 
   onSnapshot, 
-  serverTimestamp 
+  serverTimestamp,
+  collection,
+  query,
+  where,
+  getDocs
 } from 'firebase/firestore';
 import { auth, db, googleProvider, isFirebaseConfigured } from '@/lib/firebase';
 
@@ -44,6 +48,7 @@ interface AuthContextType {
   login: (email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
   register: (name: string, email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
   loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
+  recallPassById: (passId: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateTasteProfile: (tasteData: NonNullable<UserProfile['tasteProfile']>, passId: string, dialect: string, house: string) => void;
 }
@@ -345,6 +350,85 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const recallPassById = async (rawInput: string) => {
+    const trimmed = rawInput.trim().toUpperCase();
+    if (!trimmed) {
+      return { success: false, error: 'Please enter your FayrouzPass ID.' };
+    }
+
+    // Auto-normalize: if user typed "48291", format to "JO-48291"
+    let normalizedId = trimmed;
+    if (/^\d{5}$/.test(trimmed)) {
+      normalizedId = `JO-${trimmed}`;
+    } else if (/^\d{4}$/.test(trimmed)) {
+      normalizedId = `FYZ-${trimmed}`;
+    } else if (trimmed.startsWith('JO-') || trimmed.startsWith('FYZ-')) {
+      normalizedId = trimmed;
+    } else if (!trimmed.includes('-') && /^\d+$/.test(trimmed)) {
+      normalizedId = `JO-${trimmed.padStart(5, '0').slice(-5)}`;
+    }
+
+    // If Firebase is configured, query Firestore by fayrouzPassId
+    if (isFirebaseConfigured && db) {
+      try {
+        const q = query(collection(db, 'users'), where('fayrouzPassId', '==', normalizedId));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const docSnap = querySnapshot.docs[0];
+          const data = docSnap.data();
+          const profile: UserProfile = {
+            id: docSnap.id,
+            name: data.name || 'Fayrouz Member',
+            email: data.email || '',
+            fayrouzPassId: data.fayrouzPassId || normalizedId,
+            hasCompletedQuiz: Boolean(data.hasCompletedQuiz),
+            assignedDialect: data.assignedDialect || null,
+            assignedHouse: data.assignedHouse || null,
+            tasteProfile: data.tasteProfile || null,
+            createdAt: data.createdAt ? new Date(data.createdAt.seconds * 1000).toISOString() : new Date().toISOString(),
+          };
+          saveUserSession(profile);
+          return { success: true };
+        }
+      } catch (err) {
+        console.warn('Firestore pass lookup error:', err);
+      }
+    }
+
+    // Local / Demo lookup
+    const storedUsersJson = localStorage.getItem('fayrouz_registered_users') || '[]';
+    const registeredUsers: UserProfile[] = JSON.parse(storedUsersJson);
+    const existing = registeredUsers.find((u) => u.fayrouzPassId?.toUpperCase() === normalizedId);
+
+    if (existing) {
+      saveUserSession(existing);
+      return { success: true };
+    }
+
+    // Demo recovery profile: allows testing with any Pass ID immediately
+    const cleanDisplayId = normalizedId.replace(/^(JO|FYZ)-/, '');
+    const recalledGuest: UserProfile = {
+      id: `usr_recalled_${Date.now()}`,
+      name: `Member ${cleanDisplayId}`,
+      email: `${normalizedId.toLowerCase()}@fayrouz.pass`,
+      fayrouzPassId: normalizedId,
+      hasCompletedQuiz: true,
+      assignedDialect: 'المخملي المتوازن (Velvet Balanced)',
+      assignedHouse: 'بيت التوازن الكريمي (House of Velvet Balance)',
+      tasteProfile: {
+        milkPreference: 'oat',
+        flavorPreference: 'chocolate_nutty',
+        temperature: 'hot',
+        intensity: 'balanced',
+        dietaryFlags: [],
+      },
+      createdAt: new Date().toISOString(),
+    };
+    saveUserSession(recalledGuest);
+    return { success: true };
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -354,6 +438,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         register,
         loginWithGoogle,
+        recallPassById,
         logout,
         updateTasteProfile,
       }}

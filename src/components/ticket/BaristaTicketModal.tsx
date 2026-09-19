@@ -34,7 +34,7 @@ export function BaristaTicketModal({
   const [showQr, setShowQr] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const passId = user?.fayrouzPassId || 'FYZ-GUEST';
+  const passId = user?.fayrouzPassId || 'JO-GUEST';
   const customerName = user?.name || (language === 'ar' ? 'ضيف فيروز' : 'Special Guest');
 
   const handleCopyPass = () => {
