@@ -14,7 +14,7 @@
   - Plan-to-confirm: one primary (Start Quiz), rest as text links.
   - Done when: single primary CTA on guest card.
 
-- [ ] **A2. Single venue switcher** (`src/components/layout/Header.tsx`, `src/app/page.tsx` ~L109, `src/components/match/MatchView.tsx` ~L63)
+- [x] **A2. Single venue switcher** (implemented: banner is the sole switcher; header pill + match-header button removed) (`src/components/layout/Header.tsx`, `src/app/page.tsx` ~L109, `src/components/match/MatchView.tsx` ~L63)
   - Problem: 3 venue switchers (header pill desktop-only + banner + match header).
   - Plan-to-confirm: keep banner as single source, remove/merge others.
   - Done when: one obvious way to change venue on mobile + desktop.

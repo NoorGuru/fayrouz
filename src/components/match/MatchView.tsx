@@ -14,7 +14,6 @@ interface MatchViewProps {
   adventurePick: ScoredDrink | null;
   onSelectDrink: (drink: MenuItem) => void;
   onRetakeQuiz: () => void;
-  onChangeVenue: () => void;
 }
 
 const containerVariants: Variants = {
@@ -48,7 +47,6 @@ export function MatchView({
   adventurePick,
   onSelectDrink,
   onRetakeQuiz,
-  onChangeVenue,
 }: MatchViewProps) {
   const { language, t } = useLanguage();
 
@@ -79,14 +77,6 @@ export function MatchView({
         </div>
 
         <div className="flex items-center gap-2 self-end sm:self-auto">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
-            onClick={onChangeVenue}
-            className="text-xs text-gold-400 hover:text-gold-300 border border-gold-500/25 bg-espresso-900/60 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
-          >
-            {t('changeVenue')}
-          </motion.button>
           <motion.button
             whileTap={{ scale: 0.92 }}
             whileHover={{ scale: 1.08 }}

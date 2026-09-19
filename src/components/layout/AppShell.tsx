@@ -7,7 +7,6 @@ import { Coffee, Sparkles, MapPin } from 'lucide-react';
 
 interface AppShellProps {
   children: React.ReactNode;
-  currentVenueName?: string;
   onOpenVenueModal?: () => void;
   onOpenAuthModal?: () => void;
   onOpenProfileModal?: () => void;
@@ -16,7 +15,6 @@ interface AppShellProps {
 
 export function AppShell({
   children,
-  currentVenueName,
   onOpenVenueModal,
   onOpenAuthModal,
   onOpenProfileModal,
@@ -36,8 +34,6 @@ export function AppShell({
       {/* Main App Layout */}
       <div className="relative z-10 flex min-h-screen flex-col">
         <Header
-          currentVenueName={currentVenueName}
-          onOpenVenueModal={onOpenVenueModal}
           onOpenAuthModal={onOpenAuthModal}
           onOpenProfileModal={onOpenProfileModal}
         />

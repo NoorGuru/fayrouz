@@ -64,7 +64,6 @@ export default function Home() {
 
   return (
     <AppShell
-      currentVenueName={language === 'ar' ? selectedShop.nameAr : selectedShop.name}
       onOpenVenueModal={() => setIsVenueModalOpen(true)}
       onOpenAuthModal={() => setIsAuthModalOpen(true)}
       onOpenProfileModal={() => setIsProfileModalOpen(true)}
@@ -148,7 +147,6 @@ export default function Home() {
             adventurePick={matches.adventurePick}
             onSelectDrink={handleSelectDrink}
             onRetakeQuiz={handleStartQuiz}
-            onChangeVenue={() => setIsVenueModalOpen(true)}
           />
         ) : user ? (
           /* User is logged in but hasn't taken the quiz yet */

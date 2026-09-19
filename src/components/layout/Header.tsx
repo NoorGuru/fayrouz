@@ -3,18 +3,14 @@
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { Sparkles, Globe, User, Coffee, ShieldCheck } from 'lucide-react';
+import { Sparkles, Globe, User, ShieldCheck } from 'lucide-react';
 
 interface HeaderProps {
-  currentVenueName?: string;
-  onOpenVenueModal?: () => void;
   onOpenAuthModal?: () => void;
   onOpenProfileModal?: () => void;
 }
 
 export function Header({
-  currentVenueName = 'Ambar Roasters',
-  onOpenVenueModal,
   onOpenAuthModal,
   onOpenProfileModal,
 }: HeaderProps) {
@@ -55,18 +51,6 @@ export function Header({
             </span>
           </div>
         </div>
-
-        {/* Center Venue Switcher (Pill) */}
-        {onOpenVenueModal && (
-          <button
-            onClick={onOpenVenueModal}
-            className="hidden md:flex items-center gap-2 rounded-full border border-gold-500/20 bg-espresso-800/80 px-3.5 py-1.5 text-xs text-parchment-100 hover:border-gold-500/50 hover:bg-espresso-700/80 transition-all cursor-pointer"
-          >
-            <Coffee className="h-3.5 w-3.5 text-gold-400" />
-            <span className="font-medium">{currentVenueName}</span>
-            <span className="text-[10px] text-parchment-300/60">▼</span>
-          </button>
-        )}
 
         {/* Right Actions: Language Switch & Auth/Profile */}
         <div className="flex items-center gap-2.5">
