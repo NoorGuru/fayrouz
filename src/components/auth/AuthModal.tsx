@@ -97,9 +97,12 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'recall' }
       if (res.success) {
         onSuccess?.();
         onClose();
+      } else {
+        setError(res.error || (language === 'ar' ? 'فشل تسجيل الدخول بواسطة Google' : 'Google sign-in failed'));
       }
-    } catch {
-      setError(language === 'ar' ? 'فشل تسجيل الدخول بواسطة Google' : 'Google sign-in failed');
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      setError(error.message || (language === 'ar' ? 'فشل تسجيل الدخول بواسطة Google' : 'Google sign-in failed'));
     } finally {
       setIsSubmitting(false);
     }
