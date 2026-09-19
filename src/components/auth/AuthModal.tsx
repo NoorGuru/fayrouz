@@ -136,7 +136,7 @@ export function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'recall' }
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 end-4 rounded-lg p-1.5 text-parchment-300/60 hover:bg-espresso-800 hover:text-parchment-100 transition-colors cursor-pointer"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center absolute top-3 end-3 rounded-xl p-2 text-parchment-300/60 hover:bg-espresso-800 hover:text-parchment-100 transition-colors cursor-pointer"
               aria-label="Close"
             >
               <X className="w-5 h-5" />

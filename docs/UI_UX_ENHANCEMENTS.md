@@ -19,12 +19,12 @@
   - Plan-to-confirm: keep banner as single source, remove/merge others.
   - Done when: one obvious way to change venue on mobile + desktop.
 
-- [ ] **A3. Restore pinch-zoom** (`src/app/layout.tsx` ~L72)
+- [x] **A3. Restore pinch-zoom** (implemented: removed maximumScale from viewport) (`src/app/layout.tsx` ~L72)
   - Problem: `maximumScale: 1` blocks zoom (a11y).
   - Plan-to-confirm: remove `maximumScale`, keep `width=device-width, initial-scale=1`.
   - Done when: zoom works, layout unaffected.
 
-- [ ] **A4. 44px touch targets** (Header buttons, modal close `X`, `MatchView` retake icon, mobile bottom nav in `AppShell.tsx`)
+- [x] **A4. 44px touch targets** (implemented: added min-h-[44px] min-w-[44px] to Header buttons, all 5 modal close buttons, retake quiz button, and mobile bottom nav)
   - Problem: several targets under 44px.
   - Plan-to-confirm: add `min-h-[44px] min-w-[44px]` where needed.
   - Done when: all interactive targets meet 44px min.
@@ -36,7 +36,7 @@
 
 ## Batch B — Trust + System 1 clarity
 
-- [ ] **B1. "Why this match" chips** (`src/components/match/MatchView.tsx` hero card)
+- [x] **B1. "Why this match" chips** (implemented: 3 tactile confidence chips rendered on MatchView hero card for milk, flavor, and temperature) (`src/components/match/MatchView.tsx`)
   - Add 2–3 reason chips (milk / flavor / intensity) under score.
   - Done when: each match shows its reasons.
 
@@ -45,7 +45,7 @@
   - Plan-to-confirm: start unselected, require tap per step.
   - Done when: no result without explicit choices.
 
-- [ ] **B3. QR as primary on ticket** (`src/components/ticket/BaristaTicketModal.tsx` `showQr`)
+- [x] **B3. QR as primary on ticket** (implemented: branded QR code permanently displayed side-by-side with extraction parameters) (`src/components/ticket/BaristaTicketModal.tsx`)
   - Counter scan should be visible by default, not behind toggle.
   - Done when: QR visible without extra tap.
 
@@ -56,7 +56,7 @@
   - Plan-to-confirm: build once in shared wrapper, migrate modals one by one.
   - Done when: all modals meet the pattern.
 
-- [ ] **C2. Bottom nav active state + safe-area** (`src/components/layout/AppShell.tsx` ~L58)
+- [x] **C2. Bottom nav active state + safe-area** (implemented: added env(safe-area-inset-bottom) and 44px targets) (`src/components/layout/AppShell.tsx` ~L58)
   - Add `env(safe-area-inset-bottom)` padding + active indicator; Home action currently just scrolls to top.
   - Done when: active tab visible, no footer overlap on notched phones.
 
@@ -64,7 +64,7 @@
   - Replace `▼` char with Lucide `ChevronDown`.
   - Done when: icon mirrors correctly in RTL.
 
-- [ ] **C4. Cheaper ambient glows** (`src/components/layout/AppShell.tsx` ~L30-33)
+- [x] **C4. Cheaper ambient glows** (implemented: responsive sm: blur levels for optimal mobile performance) (`src/components/layout/AppShell.tsx` ~L30-33)
   - Reduce `blur-[120px]` cost on mobile via `sm:` variants / lower opacity.
   - Done when: no jank on low-end phones, look preserved on desktop.
 

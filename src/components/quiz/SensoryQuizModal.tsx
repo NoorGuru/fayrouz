@@ -8,7 +8,7 @@ import { computeCoffeeDialect, SensoryHouse, DialectArchetype } from '@/data/cof
 import confetti from 'canvas-confetti';
 import { 
   X, Sparkles, ArrowRight, ArrowLeft, Check, Flame, Snowflake, 
-  Coffee, Droplet, Shield, Leaf, HeartHandshake, Award
+  Coffee, Droplet, Shield, Leaf, HeartHandshake
 } from 'lucide-react';
 
 interface SensoryQuizModalProps {
@@ -140,7 +140,7 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
             {/* Close Button */}
             <button
               onClick={handleDismiss}
-              className="absolute top-4 end-4 rounded-lg p-1.5 text-parchment-300/60 hover:bg-espresso-800 hover:text-parchment-100 transition-colors cursor-pointer"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center absolute top-3 end-3 rounded-xl p-2 text-parchment-300/60 hover:bg-espresso-800 hover:text-parchment-100 transition-colors cursor-pointer"
               aria-label="Close"
             >
               <X className="w-5 h-5" />

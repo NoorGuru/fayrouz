@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { X, Sparkles, LogOut, RotateCcw, CheckCircle2, Award, Share2, Check, QrCode } from 'lucide-react';
+import { X, Sparkles, LogOut, RotateCcw, Award, Share2, Check, QrCode } from 'lucide-react';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -71,7 +71,7 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 end-4 rounded-lg p-1.5 text-parchment-300/60 hover:bg-espresso-800 hover:text-parchment-100 transition-colors cursor-pointer"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center absolute top-3 end-3 rounded-xl p-2 text-parchment-300/60 hover:bg-espresso-800 hover:text-parchment-100 transition-colors cursor-pointer"
           aria-label="Close"
         >
           <X className="w-5 h-5" />
