@@ -15,80 +15,80 @@ interface Translations {
 export const translations: Translations = {
   // Brand & Header
   brandName: { en: 'FAYROUZ', ar: 'فـيـروز' },
-  brandTagline: { en: 'System 1 Coffee Matcher', ar: 'قهوتك الصح بـ ٣ ثواني وبدون حيرة' },
+  brandTagline: { en: 'System 1 Coffee Matcher', ar: 'مطابقة فورية لذائقتك في القهوة المختصة' },
   brandSubtext: { 
     en: 'Connect your palate to the coffeehouse menu in 3 seconds.', 
-    ar: 'طابق ذوقك مع منيو أي كافيه مختص بـ ٣ ثواني، بدون حيرة ولا وجع راس.' 
+    ar: 'طابق ذائقتك مع قائمة أي مقهى مختص في ٣ ثوانٍ، لتختار قهوتك بثقة وبدون تردد.' 
   },
   
   // Navigation & Actions
   navHome: { en: 'Match', ar: 'المطابقة' },
-  navQuiz: { en: 'Taste Quiz', ar: 'اختبار الذوق' },
-  navPass: { en: 'FayrouzPass™', ar: 'باسبور فيروز' },
-  navShops: { en: 'Coffeehouses', ar: 'الكافيهات' },
+  navQuiz: { en: 'Taste Quiz', ar: 'اختبار الذائقة' },
+  navPass: { en: 'FayrouzPass™', ar: 'جواز فيروز' },
+  navShops: { en: 'Coffeehouses', ar: 'المقاهي' },
   signIn: { en: 'Sign In', ar: 'تسجيل الدخول' },
-  signUp: { en: 'Create Account', ar: 'حساب جديد' },
+  signUp: { en: 'Create Account', ar: 'إنشاء حساب' },
   signOut: { en: 'Sign Out', ar: 'تسجيل الخروج' },
-  profile: { en: 'My Palate', ar: 'ملفي الذوقي' },
-  retakeQuiz: { en: 'Retake Quiz', ar: 'جرّب الاختبار من جديد' },
+  profile: { en: 'My Palate', ar: 'ملف الذائقة' },
+  retakeQuiz: { en: 'Retake Quiz', ar: 'إعادة الاختبار' },
 
   // JEV Hero Match Elements
-  perfectMatchBadge: { en: '⭐ #1 YOUR PERFECT MATCH', ar: '⭐ #1 طلبك المضمون (على ذوقك بالزبط)' },
+  perfectMatchBadge: { en: '⭐ #1 YOUR PERFECT MATCH', ar: '⭐ #1 اختيارك الأنسب (مطابق لذائقتك)' },
   matchConfidence: { en: 'Match Confidence', ar: 'نسبة التوافق مع ذوقك' },
-  orderInOneTap: { en: 'Show Barista Ticket', ar: 'فرجي الشاشة للباريستا ☕' },
-  topAlternatives: { en: 'Top Safe Alternatives', ar: 'خيارات تانية رايقة ومضمونة' },
-  adventureTitle: { en: '🧪 Wanna Try Something New?', ar: '🧪 حابب تجرّب شي جديد ومختلف؟' },
+  orderInOneTap: { en: 'Show Barista Ticket', ar: 'أظهر بطاقة الطلب للباريستا ☕' },
+  topAlternatives: { en: 'Top Safe Alternatives', ar: 'خيارات بديلة ممتازة ومضمونة' },
+  adventureTitle: { en: '🧪 Wanna Try Something New?', ar: '🧪 هل ترغب بتجربة نكهة غير مألوفة؟' },
   adventureBadge: { en: 'Adventure Pick', ar: 'خيار المغامرة' },
-  adventureButton: { en: 'Try This Adventure', ar: 'يلا نجرّب 🚀' },
+  adventureButton: { en: 'Try This Adventure', ar: 'اكتشف هذه التجربة 🚀' },
   
   // Barista Ticket Modal
-  baristaTicketTitle: { en: 'Barista Order Ticket', ar: 'تذكرة الطلب للباريستا' },
+  baristaTicketTitle: { en: 'Barista Order Ticket', ar: 'بطاقة طلب الباريستا' },
   baristaTicketSubtext: { 
     en: 'Hold this card up at the counter for instant 1-tap extraction.', 
-    ar: 'فرجي هاي الشاشة للباريستا وهو بزبطلك القهوة عالأصول وبالمقاييس الصح 👌' 
+    ar: 'أظهر هذه البطاقة عند الكاونتر لتحضير مشروبك بأدق معايير الاستخلاص 👌' 
   },
   recipeSpecs: { en: 'Barista Dial-In Parameters', ar: 'معايير التحضير والاستخلاص' },
-  ratio: { en: 'Ratio', ar: 'نسبة التحضير (Ratio)' },
-  dose: { en: 'Dose', ar: 'الجرعة (Dose)' },
-  temp: { en: 'Water Temp', ar: 'حرارة المي' },
+  ratio: { en: 'Ratio', ar: 'نسبة الاستخلاص' },
+  dose: { en: 'Dose', ar: 'جرعة البن' },
+  temp: { en: 'Water Temp', ar: 'حرارة الماء' },
   milkTexture: { en: 'Milk Texture', ar: 'قوام وتبخير الحليب' },
   close: { en: 'Close', ar: 'إغلاق' },
   
   // Coffeehouses
-  selectVenue: { en: 'Select Coffeehouse', ar: 'وين حابب تشرب قهوتك اليوم؟' },
-  changeVenue: { en: 'Change Coffeehouse', ar: 'غيّر الكافيه' },
-  activeMenu: { en: 'Live Roastery Menu', ar: 'قائمة القهوة اليومية' },
+  selectVenue: { en: 'Select Coffeehouse', ar: 'اختر المقهى المختص' },
+  changeVenue: { en: 'Change Coffeehouse', ar: 'تغيير المقهى' },
+  activeMenu: { en: 'Live Roastery Menu', ar: 'قائمة الحبوب والمحامص اليومية' },
 
   // Sensory Quiz
-  quizTitle: { en: 'Discover Your Coffee Dialect', ar: 'اكتشف لهجتك ونوع ذوقك بالقهوة' },
+  quizTitle: { en: 'Discover Your Coffee Dialect', ar: 'اكتشف لهجتك الذوقية في القهوة' },
   quizSubtitle: { 
     en: '4 quick sensory choices. No typing. 30 seconds.', 
-    ar: '٤ خيارات لمس سريعة.. بدون تعقيد واستبيانات طويلة بـ ٣٠ ثانية' 
+    ar: '٤ اختيارات حسية سريعة خلال ٣٠ ثانية فقط، دون كتابة أو تعقيد' 
   },
-  questionMilk: { en: 'How do you like your coffee textured?', ar: 'كيف بتحب قوام الحليب بقهوتك؟' },
-  questionFlavor: { en: 'What flavor note excites your palate today?', ar: 'شو النكهة اللي عبالك تشربها اليوم؟' },
-  questionTemp: { en: 'Temperature Preference', ar: 'سخنة تدفيك ولا باردة تبرّد على قلبك؟' },
-  questionIntensity: { en: 'Roast & Body Intensity', ar: 'قوة وثقل القهوة (خفيفة ورايقة ولا تصحصحك؟)' },
-  saveProfile: { en: 'Generate My FayrouzPass™', ar: 'طلّع باسبور فيروز الخاص بذوقك 🎫' },
+  questionMilk: { en: 'How do you like your coffee textured?', ar: 'ما قوام الحليب المفضّل لديك؟' },
+  questionFlavor: { en: 'What flavor note excites your palate today?', ar: 'ما النغمة النكهية التي تميل إليها ذائقتك اليوم؟' },
+  questionTemp: { en: 'Temperature Preference', ar: 'دافئة تدفيك أم باردة منعشة؟' },
+  questionIntensity: { en: 'Roast & Body Intensity', ar: 'كثافة القهوة ودرجة التحميص (خفيفة وناعمة أم قوية ومركّزة؟)' },
+  saveProfile: { en: 'Generate My FayrouzPass™', ar: 'إصدار جواز فيروز الذوقي الخاص بك 🎫' },
   
   // Dietary Safeguards
-  dietaryTitle: { en: 'Dietary Safeguards', ar: 'تفضيلات وحساسيات خاصة' },
+  dietaryTitle: { en: 'Dietary Safeguards', ar: 'تفضيلات وحساسيات غذائية' },
   veganBadge: { en: 'Vegan', ar: 'نباتي 🌿' },
-  nutFreeBadge: { en: 'Nut-Free', ar: 'بدون مكسرات 🥜' },
-  lactoseFreeBadge: { en: 'Lactose-Free', ar: 'بدون لاكتوز 🥛' },
+  nutFreeBadge: { en: 'Nut-Free', ar: 'خالٍ من المكسرات 🥜' },
+  lactoseFreeBadge: { en: 'Lactose-Free', ar: 'خالٍ من اللاكتوز 🥛' },
 
   // Auth & Account
-  authModalTitle: { en: 'Join the Fayrouz Circle', ar: 'انضم لمجتمع فيروز الذوقي' },
+  authModalTitle: { en: 'Join the Fayrouz Circle', ar: 'انضم إلى مجتمع فيروز الذوقي' },
   authModalSubtext: { 
     en: 'Create your palate passport from home before your next cafe visit.', 
-    ar: 'سجّل حسابك وخلي باسبور ذوقك جاهز من البيت قبل ما تروح ع الكافيه.' 
+    ar: 'أنشئ حسابك واحتفظ بجواز ذائقتك قبل زيارتك القادمة للمقهى.' 
   },
-  emailLabel: { en: 'Email Address', ar: 'الإيميل' },
-  passwordLabel: { en: 'Password', ar: 'كلمة السر' },
-  nameLabel: { en: 'Your Name / Nickname', ar: 'اسمك أو شو بتحب نناديلك' },
-  orGoogle: { en: 'Continue with Google', ar: 'كمّل بحساب Google' },
-  haveAccount: { en: 'Already have an account? Sign in', ar: 'عندك حساب من قبل؟ سجّل دخولك' },
-  needAccount: { en: "Don't have an account? Create one", ar: 'جديد معنا؟ افتح حسابك بدقيقة' },
+  emailLabel: { en: 'Email Address', ar: 'البريد الإلكتروني' },
+  passwordLabel: { en: 'Password', ar: 'كلمة المرور' },
+  nameLabel: { en: 'Your Name / Nickname', ar: 'اسمك أو اللقب المفضّل' },
+  orGoogle: { en: 'Continue with Google', ar: 'المتابعة عبر Google' },
+  haveAccount: { en: 'Already have an account? Sign in', ar: 'لديك حساب بالفعل؟ سجّل دخولك' },
+  needAccount: { en: "Don't have an account? Create one", ar: 'عضو جديد؟ أنشئ حسابك بثوانٍ' },
 };
 
 interface LanguageContextType {

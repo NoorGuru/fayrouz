@@ -28,7 +28,7 @@ export default function Home() {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-parchment-50 tracking-tight leading-tight">
             {language === 'ar' ? (
               <>
-                طابق ذوقك مع منيو الكافيه بـ <span className="text-gold-400">٣ ثواني</span>
+                طابق ذائقتك مع قائمة المقهى في <span className="text-gold-400">٣ ثوانٍ</span>
               </>
             ) : (
               <>
@@ -46,10 +46,10 @@ export default function Home() {
           <div className="flex items-center justify-between border-b border-gold-500/15 pb-4">
             <div>
               <h2 className="text-lg font-bold text-parchment-50 font-serif">
-                {language === 'ar' ? 'جاهز قبل ما تروح؟' : 'Pre-Visit Onboarding'}
+                {language === 'ar' ? 'جاهز قبل وصولك للمقهى؟' : 'Pre-Visit Onboarding'}
               </h2>
               <p className="text-xs text-parchment-300/70">
-                {language === 'ar' ? 'افتح حسابك واعمل اختبار الذوق السريع من البيت' : 'Create your profile & take the sensory quiz from home'}
+                {language === 'ar' ? 'أنشئ حسابك واكتشف لهجتك الذوقية بكل سهولة من البيت' : 'Create your profile & take the sensory quiz from home'}
               </p>
             </div>
             <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-fayrouz-500/20 text-fayrouz-400 border border-fayrouz-500/30">
@@ -61,30 +61,30 @@ export default function Home() {
             <div className="rounded-xl border border-espresso-700 bg-espresso-900/60 p-3.5 space-y-1.5">
               <Zap className="w-4 h-4 text-gold-400" />
               <div className="font-semibold text-parchment-100">
-                {language === 'ar' ? '٣٠ ثانية وبس' : '30-Second Quiz'}
+                {language === 'ar' ? '٣٠ ثانية فقط' : '30-Second Quiz'}
               </div>
               <div className="text-parchment-400 text-[11px]">
-                {language === 'ar' ? '٤ كبسات لمس سريعة، بدون استبيانات وفلسفة زايدة' : '4 quick tactile taps, zero typing or friction'}
+                {language === 'ar' ? '٤ اختيارات حسية سريعة باللمس دون استبيانات مطولة' : '4 quick tactile taps, zero typing or friction'}
               </div>
             </div>
 
             <div className="rounded-xl border border-espresso-700 bg-espresso-900/60 p-3.5 space-y-1.5">
               <ShieldCheck className="w-4 h-4 text-fayrouz-400" />
               <div className="font-semibold text-parchment-100">
-                {language === 'ar' ? 'باسبور دائم' : 'Persistent Account'}
+                {language === 'ar' ? 'جواز ذوقي دائم' : 'Persistent Account'}
               </div>
               <div className="text-parchment-400 text-[11px]">
-                {language === 'ar' ? 'باسبورك الذوقي معك وين ما رحت، بعنبر وتراث وغيرهم' : 'Carry your taste passport to Ambar, Turath & more'}
+                {language === 'ar' ? 'يرافقك جواز فيروز في عنبر وتراث وكافة المقاهي الشريكة' : 'Carry your taste passport to Ambar, Turath & more'}
               </div>
             </div>
 
             <div className="rounded-xl border border-espresso-700 bg-espresso-900/60 p-3.5 space-y-1.5">
               <Award className="w-4 h-4 text-amber-400" />
               <div className="font-semibold text-parchment-100">
-                {language === 'ar' ? 'نظام JEV الذكي' : 'JEV Decision Engine'}
+                {language === 'ar' ? 'منظومة JEV الذكية' : 'JEV Decision Engine'}
               </div>
               <div className="text-parchment-400 text-[11px]">
-                {language === 'ar' ? '٣ خيارات مضمونة + ١ مغامرة، وبترتاح من الحيرة' : '3 safe matches + 1 adventure pick'}
+                {language === 'ar' ? '٣ خيارات مضمونة + خيار استكشافي واحد لمنع الحيرة' : '3 safe matches + 1 adventure pick'}
               </div>
             </div>
           </div>
