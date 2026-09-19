@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Amiri, Aref_Ruqaa, Inter } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { AuthProvider } from "@/context/AuthContext";
 
 const amiri = Amiri({
   subsets: ["arabic", "latin"],
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   description: "طابق ذوقك مع منيو أي كافيه مختص في ٣ ثواني. ٣ خيارات مضمونة + ١ مغامرة.",
   applicationName: "Fayrouz",
   authors: [{ name: "Noor", url: "https://bynoor.io" }],
-  keywords: ["قهوة مختصة", "فيروز", "Fayrouz", "Ambar", "Turath", "System 1", "Arabic coffee"],
+  keywords: ["قهوة مختصة", "فيروز", "Fayrouz", "Ambar", "Turath", "Arabic coffee"],
 };
 
 export const viewport: Viewport = {
@@ -48,7 +49,9 @@ export default function RootLayout({
     <html lang="en" className={`${amiri.variable} ${arefRuqaa.variable} ${inter.variable} h-full bg-espresso-950`}>
       <body className="min-h-full flex flex-col font-sans bg-espresso-950 text-parchment-50 antialiased selection:bg-gold-500/30 selection:text-gold-200">
         <LanguageProvider>
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </LanguageProvider>
       </body>
     </html>

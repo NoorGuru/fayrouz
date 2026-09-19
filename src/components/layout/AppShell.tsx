@@ -9,7 +9,7 @@ interface AppShellProps {
   currentVenueName?: string;
   onOpenVenueModal?: () => void;
   onOpenAuthModal?: () => void;
-  userEmail?: string | null;
+  onOpenProfileModal?: () => void;
 }
 
 export function AppShell({
@@ -17,7 +17,7 @@ export function AppShell({
   currentVenueName,
   onOpenVenueModal,
   onOpenAuthModal,
-  userEmail,
+  onOpenProfileModal,
 }: AppShellProps) {
   const { direction } = useLanguage();
 
@@ -36,7 +36,7 @@ export function AppShell({
           currentVenueName={currentVenueName}
           onOpenVenueModal={onOpenVenueModal}
           onOpenAuthModal={onOpenAuthModal}
-          userEmail={userEmail}
+          onOpenProfileModal={onOpenProfileModal}
         />
 
         <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-6 sm:px-6 md:py-8">

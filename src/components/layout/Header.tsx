@@ -2,25 +2,35 @@
 
 import React from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Sparkles, Globe, User, Coffee } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { Sparkles, Globe, User, Coffee, ShieldCheck } from 'lucide-react';
 
 interface HeaderProps {
   currentVenueName?: string;
   onOpenVenueModal?: () => void;
   onOpenAuthModal?: () => void;
-  userEmail?: string | null;
+  onOpenProfileModal?: () => void;
 }
 
 export function Header({
   currentVenueName = 'Ambar Roasters',
   onOpenVenueModal,
   onOpenAuthModal,
-  userEmail,
+  onOpenProfileModal,
 }: HeaderProps) {
   const { language, setLanguage } = useLanguage();
+  const { user } = useAuth();
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'ar' : 'en');
+  };
+
+  const handleAccountClick = () => {
+    if (user) {
+      onOpenProfileModal?.();
+    } else {
+      onOpenAuthModal?.();
+    }
   };
 
   return (
@@ -36,8 +46,8 @@ export function Header({
               <span className="font-serif tracking-widest text-lg font-bold text-parchment-50">
                 FAYROUZ
               </span>
-              <span className="text-xs font-medium text-gold-400/80 font-sans tracking-normal">
-                فيروز
+              <span className="text-xs font-serif text-gold-400/80 tracking-normal">
+                فـيـروز
               </span>
             </div>
             <span className="text-[10px] tracking-wider text-parchment-300/70 uppercase">
@@ -72,13 +82,27 @@ export function Header({
 
           {/* Account Profile / Sign In */}
           <button
-            onClick={onOpenAuthModal}
-            className="flex items-center gap-2 rounded-lg border border-gold-500/30 bg-gradient-to-r from-gold-500/10 to-gold-600/20 px-3 py-1.5 text-xs font-medium text-gold-300 hover:border-gold-400 hover:bg-gold-500/20 transition-all cursor-pointer"
+            onClick={handleAccountClick}
+            className="flex items-center gap-2 rounded-lg border border-gold-500/30 bg-gradient-to-r from-gold-500/10 to-gold-600/20 px-3 py-1.5 text-xs font-medium text-gold-300 hover:border-gold-400 hover:bg-gold-500/20 transition-all cursor-pointer shadow-sm"
           >
-            <User className="h-3.5 w-3.5 text-gold-400" />
-            <span className="max-w-[100px] truncate">
-              {userEmail ? userEmail.split('@')[0] : (language === 'ar' ? 'حسابي' : 'Account')}
-            </span>
+            {user ? (
+              <>
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gold-500 text-espresso-950 font-bold text-[10px]">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <span className="max-w-[90px] truncate font-medium">{user.name}</span>
+                {user.fayrouzPassId && (
+                  <span className="hidden sm:inline-block text-[10px] font-mono text-gold-400 bg-espresso-950 px-1.5 py-0.5 rounded border border-gold-500/20">
+                    {user.fayrouzPassId}
+                  </span>
+                )}
+              </>
+            ) : (
+              <>
+                <User className="h-3.5 w-3.5 text-gold-400" />
+                <span>{language === 'ar' ? 'تسجيل الدخول' : 'Sign In'}</span>
+              </>
+            )}
           </button>
         </div>
       </div>
