@@ -81,8 +81,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${amiri.variable} ${arefRuqaa.variable} ${inter.variable} h-full bg-espresso-950`}>
-      <body className="min-h-full flex flex-col font-sans bg-espresso-950 text-parchment-50 antialiased selection:bg-gold-500/30 selection:text-gold-200">
+    <html lang="en" suppressHydrationWarning className={`${amiri.variable} ${arefRuqaa.variable} ${inter.variable} h-full bg-espresso-950`}>
+      <body suppressHydrationWarning className="min-h-full flex flex-col font-sans bg-espresso-950 text-parchment-50 antialiased selection:bg-gold-500/30 selection:text-gold-200">
         <LanguageProvider>
           <AuthProvider>
             {children}
