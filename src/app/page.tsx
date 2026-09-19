@@ -5,27 +5,32 @@ import { AppShell } from '@/components/layout/AppShell';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { ProfileModal } from '@/components/auth/ProfileModal';
 import { SensoryQuizModal } from '@/components/quiz/SensoryQuizModal';
+import { VenueSelectorModal } from '@/components/venue/VenueSelectorModal';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { Sparkles, ShieldCheck, Zap, Award, ArrowRight, UserPlus, Coffee, RotateCcw } from 'lucide-react';
+import { COFFEE_SHOPS, CoffeeShop, MENU_ITEMS } from '@/data/coffeehouses';
+import { Sparkles, ShieldCheck, Zap, Award, ArrowRight, UserPlus, Coffee, RotateCcw, MapPin } from 'lucide-react';
 
 export default function Home() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
 
-  const [currentVenue] = useState('Ambar Specialty Roasters');
+  const [selectedShop, setSelectedShop] = useState<CoffeeShop>(COFFEE_SHOPS[0]);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
+  const [isVenueModalOpen, setIsVenueModalOpen] = useState(false);
 
   const handleStartQuiz = () => {
     setIsQuizModalOpen(true);
   };
 
+  const currentShopDrinks = MENU_ITEMS.filter((item) => item.shopId === selectedShop.id);
+
   return (
     <AppShell
-      currentVenueName={currentVenue}
-      onOpenVenueModal={() => {}}
+      currentVenueName={language === 'ar' ? selectedShop.nameAr : selectedShop.name}
+      onOpenVenueModal={() => setIsVenueModalOpen(true)}
       onOpenAuthModal={() => setIsAuthModalOpen(true)}
       onOpenProfileModal={() => setIsProfileModalOpen(true)}
     >
@@ -52,6 +57,36 @@ export default function Home() {
           <p className="text-base sm:text-lg text-parchment-300/80 leading-relaxed font-sans max-w-xl mx-auto">
             {t('brandSubtext')}
           </p>
+        </div>
+
+        {/* Active Venue Banner */}
+        <div className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-gold-500/25 bg-espresso-900/80 backdrop-blur-md">
+          <div className="flex items-center gap-2.5 text-left rtl:text-right">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold-500/20 border border-gold-500/30 text-gold-400 shrink-0">
+              <Coffee className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-parchment-50 font-serif">
+                  {language === 'ar' ? selectedShop.nameAr : selectedShop.name}
+                </span>
+                <span className="text-[10px] text-parchment-400 bg-espresso-950 px-2 py-0.5 rounded-full border border-espresso-800">
+                  {language === 'ar' ? selectedShop.neighborhoodAr : selectedShop.neighborhood}
+                </span>
+              </div>
+              <p className="text-[11px] text-parchment-300/70">
+                {currentShopDrinks.length} {language === 'ar' ? 'أصناف متوفرة اليوم في القائمة' : 'specialty drinks on live bar'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setIsVenueModalOpen(true)}
+            className="flex items-center gap-1 text-xs text-gold-400 hover:text-gold-300 font-semibold px-3 py-1.5 rounded-lg border border-gold-500/30 hover:border-gold-500/60 transition-all cursor-pointer shrink-0"
+          >
+            <MapPin className="w-3.5 h-3.5" />
+            <span>{t('changeVenue')}</span>
+          </button>
         </div>
 
         {/* Dynamic User State Card (Logged In vs New Guest) */}
@@ -93,8 +128,8 @@ export default function Home() {
               <div className="space-y-3 pt-1">
                 <p className="text-xs text-parchment-200">
                   {language === 'ar'
-                    ? 'حسابك جاهز! خطوتك التالية هي تحديد ذائقتك خلال ٣٠ ثانية فقط لربط منيو المقاهي بكوبك المفضل.'
-                    : 'Your account is ready! Take the 30-second sensory quiz to match cafe menus with your palate.'}
+                    ? `حسابك جاهز! خطوتك التالية هي تحديد ذائقتك خلال ٣٠ ثانية لمطابقة قائمة ${selectedShop.nameAr} مع كوبك المفضل.`
+                    : `Your account is ready! Take the 30-second sensory quiz to match ${selectedShop.name}'s menu with your palate.`}
                 </p>
                 <button
                   onClick={handleStartQuiz}
@@ -127,13 +162,15 @@ export default function Home() {
                   <button
                     onClick={() => {
                       alert(language === 'ar' 
-                        ? 'سيعرض منيو المقهى والمطابقة 3+1 في الخطوة التالية (Task 4 & 5)!' 
-                        : 'Coffeehouse menu & 3+1 matches will be connected next in Task 4 & 5!');
+                        ? `سيبدأ نظام المطابقة الفوري 3+1 لقائمة ${selectedShop.nameAr} في الخطوة القادمة (Task 5)!` 
+                        : `The 3+1 match engine for ${selectedShop.name} will be built next in Task 5!`);
                     }}
                     className="flex-1 flex items-center justify-center gap-2 text-xs font-semibold text-espresso-950 bg-gradient-to-r from-gold-500 to-gold-600 px-4 py-2.5 rounded-xl hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer shadow-md"
                   >
                     <Coffee className="w-4 h-4" />
-                    <span>{language === 'ar' ? 'استكشف قائمة القهوة المتطابقة' : 'View Matched Menu'}</span>
+                    <span>
+                      {language === 'ar' ? `استكشف مطابقة ${selectedShop.nameAr}` : `View ${selectedShop.name} Matches`}
+                    </span>
                   </button>
 
                   <button
@@ -196,7 +233,7 @@ export default function Home() {
                   {language === 'ar' ? 'باسبور دائم' : 'Persistent Pass'}
                 </div>
                 <div className="text-parchment-400 text-[11px]">
-                  {language === 'ar' ? 'باسبورك الذوقي معك وين ما رحت، بعنبر وتراث وغيرهم' : 'Carry your taste passport to Ambar, Turath & more'}
+                  {language === 'ar' ? 'باسبورك الذوقي معك وين ما رحت، بألموند وديمتريس وعنبر' : 'Carry your taste passport to Almond, Dimitri’s & more'}
                 </div>
               </div>
 
@@ -233,6 +270,14 @@ export default function Home() {
         isOpen={isQuizModalOpen}
         onClose={() => setIsQuizModalOpen(false)}
         onCompleted={() => setIsQuizModalOpen(false)}
+      />
+
+      {/* Coffeehouse Selector Modal */}
+      <VenueSelectorModal
+        isOpen={isVenueModalOpen}
+        onClose={() => setIsVenueModalOpen(false)}
+        selectedShopId={selectedShop.id}
+        onSelectShop={(shop) => setSelectedShop(shop)}
       />
     </AppShell>
   );
