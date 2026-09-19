@@ -90,29 +90,36 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
           </p>
         </div>
 
-        {/* FayrouzPass Status Card */}
-        <div className="rounded-2xl border border-gold-500/30 bg-espresso-950/80 p-4 mb-6 space-y-3">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-gold-400 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              {t('navPass')}
-            </span>
+        {/* FayrouzPass Luxury Metal Status Card */}
+        <div className="rounded-3xl border-2 border-gold-400/50 bg-gradient-to-br from-espresso-950 via-[#18110D] to-espresso-950 p-5 mb-6 space-y-3.5 shadow-2xl relative overflow-hidden">
+          <div className="pointer-events-none absolute -top-20 -right-20 h-48 w-48 rounded-full bg-gold-500/15 blur-2xl" />
+
+          <div className="flex items-center justify-between text-xs border-b border-gold-500/20 pb-2.5 relative z-10">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/30">
+                🇯🇴 JO
+              </span>
+              <span className="font-serif font-bold tracking-widest text-[11px] text-parchment-100 uppercase">
+                FAYROUZ PASS™
+              </span>
+            </div>
+
             {user.hasCompletedQuiz && user.fayrouzPassId ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setShowPassQr(!showPassQr)}
-                  className="flex items-center gap-1 text-[11px] font-mono text-gold-300 hover:text-gold-200 bg-gold-500/15 border border-gold-500/30 px-2 py-0.5 rounded-lg transition-colors cursor-pointer"
+                  className="flex items-center gap-1 text-[11px] font-mono text-gold-300 hover:text-gold-200 bg-gold-500/15 border border-gold-500/30 px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
                 >
                   <QrCode className="w-3 h-3" />
                   <span>{showPassQr ? (language === 'ar' ? 'إغلاق' : 'Close') : (language === 'ar' ? 'الباركود' : 'QR')}</span>
                 </button>
-                <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-gold-500/20 text-gold-300 border border-gold-500/30">
+                <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-gold-500 text-espresso-950 shadow-sm">
                   {user.fayrouzPassId}
                 </span>
               </div>
             ) : (
-              <span className="text-[11px] text-parchment-400/80 bg-espresso-800 px-2 py-0.5 rounded">
+              <span className="text-[10px] text-parchment-400 bg-espresso-800 px-2.5 py-1 rounded-full">
                 {language === 'ar' ? 'بانتظار الاختبار' : 'Quiz Pending'}
               </span>
             )}
@@ -122,12 +129,12 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col items-center justify-center p-3 rounded-xl bg-parchment-50 text-espresso-950 space-y-2 border border-gold-500/40"
+              className="flex flex-col items-center justify-center p-3 rounded-2xl bg-white text-espresso-950 space-y-2 border border-gold-500/40 shadow-inner relative z-10"
             >
-              <div className="p-2 bg-white rounded-lg shadow-sm">
+              <div className="p-2 bg-white rounded-xl shadow-sm">
                 <QRCodeSVG
                   value={`https://fayrouz.bynoor.io/ticket/?pass=${encodeURIComponent(user.fayrouzPassId)}`}
-                  size={130}
+                  size={125}
                   level="H"
                   bgColor="#FFFFFF"
                   fgColor="#120D0A"
@@ -135,8 +142,8 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
                     src: '/icon.svg',
                     x: undefined,
                     y: undefined,
-                    height: 28,
-                    width: 28,
+                    height: 26,
+                    width: 26,
                     excavate: true,
                   }}
                 />
@@ -145,9 +152,9 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
                 <div className="text-[11px] font-bold font-mono text-espresso-950">
                   {user.fayrouzPassId}
                 </div>
-                <div className="text-[10px] text-espresso-800/80">
+                <div className="text-[10px] text-espresso-700">
                   {language === 'ar'
-                    ? 'امسح في أي كافيه بعمّان لعرض ذائقتك'
+                    ? 'امسح في أي كافيه شريك بعمّان لقراءة ذائقتك فوراً'
                     : 'Permanent Member Pass QR for Amman Baristas'}
                 </div>
               </div>
@@ -155,16 +162,18 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
           )}
 
           {user.hasCompletedQuiz && user.assignedDialect ? (
-            <div className="space-y-2 pt-2 border-t border-espresso-800">
-              <div className="flex items-center gap-2 text-xs text-parchment-100 font-medium">
-                <Award className="w-4 h-4 text-gold-400" />
-                <span>{user.assignedDialect}</span>
+            <div className="space-y-1.5 pt-1 relative z-10">
+              <div className="flex items-center gap-1.5 text-xs text-gold-400 font-semibold uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{user.assignedHouse}</span>
               </div>
-              {user.assignedHouse && (
-                <p className="text-[11px] text-parchment-300/70">
-                  {user.assignedHouse}
-                </p>
-              )}
+              <h4 className="text-xl font-serif font-bold text-parchment-50">
+                {user.assignedDialect}
+              </h4>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-gold-400/80 uppercase pt-1">
+                <span className="inline-block w-2.5 h-2 rounded-xs border border-gold-500/40 bg-gold-500/20" />
+                <span>CHIP EMBEDDED • ACTIVE MEMBER</span>
+              </div>
             </div>
           ) : (
             <div className="pt-2 border-t border-espresso-800 space-y-2">

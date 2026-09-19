@@ -8,7 +8,7 @@ import { computeCoffeeDialect, SensoryHouse, DialectArchetype } from '@/data/cof
 import confetti from 'canvas-confetti';
 import { 
   X, Sparkles, ArrowRight, ArrowLeft, Check, Flame, Snowflake, 
-  Coffee, Droplet, Shield, Leaf, HeartHandshake
+  Coffee, Droplet, Shield, Leaf, HeartHandshake, Share2, Copy
 } from 'lucide-react';
 
 interface SensoryQuizModalProps {
@@ -29,6 +29,7 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
   const [temperature, setTemperature] = useState<string | null>(null);
   const [intensity, setIntensity] = useState<string | null>(null);
   const [dietaryFlags, setDietaryFlags] = useState<string[]>([]);
+  const [copiedPass, setCopiedPass] = useState(false);
 
   // Every take starts clean: reset on every dismiss path (X, backdrop,
   // completion) so the next open never carries stale selections.
@@ -40,6 +41,7 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
     setIntensity(null);
     setDietaryFlags([]);
     setResult(null);
+    setCopiedPass(false);
   };
 
   const handleDismiss = () => {
@@ -54,6 +56,30 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
     house: SensoryHouse;
     passId: string;
   } | null>(null);
+
+  const handleSharePass = async () => {
+    if (!result) return;
+    const shareText = language === 'ar'
+      ? `لهجتي الذوقية في القهوة هي "${result.dialect.titleAr}" (${result.house.nameAr}) برقم باسبور ${result.passId}! اكتشف قهوتك الصح في عمّان:`
+      : `My Coffee Dialect on Fayrouz is "${result.dialect.title}" (${result.house.name}) with Pass ID ${result.passId}! Find your match in Amman:`;
+    const shareUrl = `https://fayrouz.bynoor.io?pass=${result.passId}`;
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: 'FayrouzPass™',
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch {
+        // dismissed
+      }
+    } else {
+      navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      setCopiedPass(true);
+      setTimeout(() => setCopiedPass(false), 2000);
+    }
+  };
 
   const toggleDietary = (flag: string) => {
     setDietaryFlags((prev) =>
@@ -443,7 +469,7 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
               >
                 {/* House Symbol & Congratulation */}
                 <div className="space-y-2">
-                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-espresso-950 border-2 border-gold-500/40 text-3xl shadow-xl">
+                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-500/20 to-espresso-950 border-2 border-gold-400/50 text-3xl shadow-2xl">
                     {result.house.symbol}
                   </div>
                   <h3 className="text-2xl font-serif font-bold text-parchment-50">
@@ -451,64 +477,104 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
                   </h3>
                   <p className="text-xs text-parchment-300/80">
                     {language === 'ar'
-                      ? 'تم حفظ باسبورك في حسابك ليرافقك في كافة المقاهي الشريكة.'
-                      : 'Your taste passport is saved permanently to your account.'}
+                      ? 'تم حفظ باسبورك في حسابك ليرافقك في كافة المقاهي الشريكة بعمّان.'
+                      : 'Your permanent taste passport is active across all Amman partner roasters.'}
                   </p>
                 </div>
 
-                {/* The Luxury FayrouzPass Card */}
-                <div className="rounded-2xl border-2 border-gold-500/40 bg-gradient-to-br from-espresso-950 via-espresso-900 to-espresso-950 p-6 shadow-2xl relative overflow-hidden text-left rtl:text-right space-y-4">
-                  {/* Pass ID Banner */}
-                  <div className="flex items-center justify-between border-b border-gold-500/20 pb-3">
+                {/* The Luxury Obsidian & Brushed Gold Metal FayrouzPass Card */}
+                <div className="rounded-3xl border-2 border-gold-400/60 bg-gradient-to-br from-espresso-950 via-[#18110D] to-espresso-950 p-6 sm:p-7 shadow-[0_20px_50px_rgba(212,175,55,0.2)] relative overflow-hidden text-left rtl:text-right space-y-4">
+                  {/* Subtle Shimmer Overlay */}
+                  <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gold-500/15 blur-3xl" />
+
+                  {/* Watermark House Symbol in Background */}
+                  <div className="pointer-events-none absolute bottom-2 end-4 text-7xl opacity-[0.07] select-none font-serif">
+                    {result.house.symbol}
+                  </div>
+
+                  {/* Top Row: Country Badge + Pass ID */}
+                  <div className="flex items-center justify-between border-b border-gold-500/20 pb-3 relative z-10">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-gold-400" />
-                      <span className="text-xs font-bold tracking-widest text-parchment-100 font-serif">
+                      <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/30">
+                        🇯🇴 JO
+                      </span>
+                      <span className="text-[11px] font-bold tracking-widest text-parchment-100 font-serif uppercase">
                         FAYROUZ PASS™
                       </span>
                     </div>
-                    <span className="font-mono text-xs px-2.5 py-1 rounded-md bg-gold-500/20 text-gold-300 border border-gold-500/30 font-bold">
-                      {result.passId}
-                    </span>
+
+                    <button
+                      type="button"
+                      onClick={handleSharePass}
+                      className="font-mono text-xs font-bold px-2.5 py-1 rounded-lg bg-gold-500 text-espresso-950 flex items-center gap-1.5 shadow-md hover:bg-gold-400 cursor-pointer transition-all"
+                      title="Copy or Share Pass ID"
+                    >
+                      <span>{result.passId}</span>
+                      {copiedPass ? <Check className="w-3 h-3 text-espresso-950 stroke-[3]" /> : <Copy className="w-3 h-3" />}
+                    </button>
                   </div>
 
                   {/* Archetype Title & House */}
-                  <div className="space-y-1">
-                    <div className="text-[11px] font-semibold text-gold-400 uppercase tracking-wider">
-                      {language === 'ar' ? result.house.nameAr : result.house.name}
+                  <div className="space-y-1 relative z-10">
+                    <div className="text-[11px] font-semibold text-gold-400 uppercase tracking-widest flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{language === 'ar' ? result.house.nameAr : result.house.name}</span>
                     </div>
-                    <h4 className="text-xl font-serif font-bold text-parchment-50">
+                    <h4 className="text-2xl font-serif font-bold text-parchment-50 tracking-tight">
                       {language === 'ar' ? result.dialect.titleAr : result.dialect.title}
                     </h4>
-                    <p className="text-xs text-parchment-300/80 leading-relaxed">
-                      {language === 'ar' ? result.dialect.taglineAr : result.dialect.tagline}
+                    <p className="text-xs text-parchment-300/80 leading-relaxed font-sans">
+                      &ldquo;{language === 'ar' ? result.dialect.taglineAr : result.dialect.tagline}&rdquo;
                     </p>
                   </div>
 
-                  {/* Safeguards Badges */}
-                  {dietaryFlags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 pt-2">
-                      {dietaryFlags.map((f) => (
-                        <span
-                          key={f}
-                          className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-fayrouz-500/20 text-fayrouz-300 border border-fayrouz-500/30"
-                        >
-                          {f === 'vegan' ? t('veganBadge') : f === 'nut_free' ? t('nutFreeBadge') : t('lactoseFreeBadge')}
-                        </span>
-                      ))}
+                  {/* Bottom Chip & Safeguards Row */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-espresso-800/80 relative z-10">
+                    <div className="flex items-center gap-1.5 text-[10px] font-mono text-gold-400/80 uppercase">
+                      <span className="inline-block w-3 h-2.5 rounded-xs border border-gold-500/40 bg-gold-500/20" />
+                      <span>CHIP VALIDATED</span>
                     </div>
-                  )}
+
+                    {dietaryFlags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {dietaryFlags.map((f) => (
+                          <span
+                            key={f}
+                            className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-fayrouz-500/20 text-fayrouz-300 border border-fayrouz-500/30"
+                          >
+                            {f === 'vegan' ? t('veganBadge') : f === 'nut_free' ? t('nutFreeBadge') : t('lactoseFreeBadge')}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Action to proceed */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleCloseAndProceed}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-5 py-3 text-sm font-bold text-espresso-950 shadow-lg hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
-                >
-                  <span>{language === 'ar' ? 'استكشف قهوتك اليوم' : 'View Coffee Matches'}</span>
-                  <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-                </motion.button>
+                {/* Actions: Share Pass + Proceed to Matches */}
+                <div className="space-y-2.5 pt-1">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleCloseAndProceed}
+                    className="w-full min-h-[48px] flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-600 px-5 py-3.5 text-sm font-bold text-espresso-950 shadow-xl hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
+                  >
+                    <span>{language === 'ar' ? 'استكشف قهوتك اليوم في المقاهي' : 'Explore Your Coffee Matches'}</span>
+                    <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                  </motion.button>
+
+                  <button
+                    type="button"
+                    onClick={handleSharePass}
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 rounded-xl border border-espresso-700 bg-espresso-900/60 px-4 py-2.5 text-xs font-semibold text-parchment-200 hover:border-gold-500/40 hover:text-gold-300 transition-colors cursor-pointer"
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-gold-400" />
+                    <span>
+                      {copiedPass
+                        ? language === 'ar' ? 'تم نسخ بيانات باسبورك والرابط!' : 'Pass & Link Copied!'
+                        : language === 'ar' ? 'مشاركة باسبور فيروز مع أصحابك' : 'Share My FayrouzPass™'}
+                    </span>
+                  </button>
+                </div>
               </motion.div>
             )}
           </motion.div>

@@ -8,12 +8,13 @@ import { ProfileModal } from '@/components/auth/ProfileModal';
 import { SensoryQuizModal } from '@/components/quiz/SensoryQuizModal';
 import { VenueSelectorModal } from '@/components/venue/VenueSelectorModal';
 import { MatchView } from '@/components/match/MatchView';
+import { SensoryCupVisual } from '@/components/match/SensoryCupVisual';
 import { BaristaTicketModal } from '@/components/ticket/BaristaTicketModal';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { COFFEE_SHOPS, CoffeeShop, MENU_ITEMS, MenuItem } from '@/data/coffeehouses';
 import { calculatePalateMatches } from '@/utils/matchEngine';
-import { Sparkles, ShieldCheck, Zap, Award, ArrowRight, UserPlus, Coffee, RotateCcw, MapPin } from 'lucide-react';
+import { Sparkles, ArrowRight, UserPlus, Coffee, MapPin } from 'lucide-react';
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -25,6 +26,9 @@ export default function Home() {
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
   const [isVenueModalOpen, setIsVenueModalOpen] = useState(false);
   const [showMatches, setShowMatches] = useState(false);
+
+  // Guest Live Taste Teaser State
+  const [guestTasteMood, setGuestTasteMood] = useState<'chocolate_nutty' | 'fruity_floral' | 'sweet_caramel' | 'balanced'>('chocolate_nutty');
 
   // Task 6 Barista Ticket Modal State
   const [selectedTicketDrink, setSelectedTicketDrink] = useState<MenuItem | null>(null);
@@ -54,6 +58,18 @@ export default function Home() {
 
   // Palate 3+1 matches calculated dynamically
   const matches = calculatePalateMatches(user?.tasteProfile, currentShopDrinks);
+
+  // Live Guest Teaser Match (previews top drink for chosen mood instantly)
+  const previewMatch = calculatePalateMatches(
+    {
+      milkPreference: 'oat',
+      flavorPreference: guestTasteMood,
+      temperature: 'hot',
+      intensity: 'medium',
+      dietaryFlags: [],
+    },
+    currentShopDrinks
+  ).perfectMatch;
 
   const handleSelectDrink = (drink: MenuItem) => {
     setSelectedTicketDrink(drink);
@@ -105,30 +121,30 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Active Venue Banner */}
-        <div className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-gold-500/25 bg-espresso-900/80 backdrop-blur-md">
-          <div className="flex items-center gap-2.5 text-left rtl:text-right">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold-500/20 border border-gold-500/30 text-gold-400 shrink-0">
-              <Coffee className="w-4 h-4" />
+        {/* Active Venue Banner / Roastery Atelier Bar */}
+        <div className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-gold-500/30 bg-espresso-900/90 backdrop-blur-md shadow-xl">
+          <div className="flex items-center gap-3 text-left rtl:text-right">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-gold-500/25 to-espresso-950 border border-gold-500/40 text-gold-300 shrink-0 shadow-inner">
+              <Coffee className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-parchment-50 font-serif">
+                <span className="text-sm font-bold text-parchment-50 font-serif">
                   {language === 'ar' ? selectedShop.nameAr : selectedShop.name}
                 </span>
-                <span className="text-[10px] text-parchment-400 bg-espresso-950 px-2 py-0.5 rounded-full border border-espresso-800">
+                <span className="text-[10px] text-parchment-300 font-mono bg-espresso-950 px-2.5 py-0.5 rounded-full border border-gold-500/20">
                   {language === 'ar' ? selectedShop.neighborhoodAr : selectedShop.neighborhood}
                 </span>
               </div>
-              <p className="text-[11px] text-parchment-300/70">
-                {currentShopDrinks.length} {language === 'ar' ? 'أصناف متوفرة اليوم في القائمة' : 'specialty drinks on live bar'}
+              <p className="text-[11px] text-parchment-400">
+                ✨ {currentShopDrinks.length} {language === 'ar' ? 'أصناف حبوب متوفرة اليوم في القائمة' : 'specialty lots on live bar today'}
               </p>
             </div>
           </div>
 
           <button
             onClick={() => setIsVenueModalOpen(true)}
-            className="flex items-center gap-1 text-xs text-gold-400 hover:text-gold-300 font-semibold px-3 py-1.5 rounded-lg border border-gold-500/30 hover:border-gold-500/60 transition-all cursor-pointer shrink-0"
+            className="min-h-[44px] flex items-center gap-1.5 text-xs text-gold-400 hover:text-gold-300 font-semibold px-3.5 py-2 rounded-xl border border-gold-500/30 hover:border-gold-500/60 bg-gold-500/10 hover:bg-gold-500/20 transition-all cursor-pointer shrink-0"
           >
             <MapPin className="w-3.5 h-3.5" />
             <span>{t('changeVenue')}</span>
@@ -150,14 +166,14 @@ export default function Home() {
           />
         ) : user ? (
           /* User is logged in but hasn't taken the quiz yet */
-          <div className="w-full glass-panel-glow rounded-2xl p-6 sm:p-8 space-y-5 text-left rtl:text-right border border-gold-500/30">
+          <div className="w-full glass-panel-glow rounded-3xl p-6 sm:p-8 space-y-5 text-left rtl:text-right border border-gold-500/35">
             <div className="flex items-center justify-between border-b border-gold-500/15 pb-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gold-500 text-espresso-950 font-serif text-lg font-bold">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-500 to-amber-600 text-espresso-950 font-serif text-xl font-bold shadow-md">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-parchment-50 flex items-center gap-2">
+                  <div className="text-base font-bold text-parchment-50 flex items-center gap-2 font-serif">
                     <span>
                       {language === 'ar' ? `أهلاً بك، ${user.name} 👋` : `Welcome back, ${user.name} 👋`}
                     </span>
@@ -176,16 +192,16 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="space-y-3 pt-1">
-              <p className="text-xs text-parchment-200">
+            <div className="space-y-4 pt-1">
+              <p className="text-xs sm:text-sm text-parchment-200 leading-relaxed">
                 {language === 'ar'
-                  ? `حسابك جاهز! خطوتك التالية هي تحديد ذائقتك خلال ٣٠ ثانية فقط لمطابقة قائمة ${selectedShop.nameAr} بدقة.`
+                  ? `حسابك جاهز! خطوتك التالية هي تحديد ذائقتك خلال ٣٠ ثانية فقط لمطابقة قائمة ${selectedShop.nameAr} بدقة بدون أي حيرة.`
                   : `Your account is ready! Discover your coffee dialect in 30 seconds to get your tailored 3+1 matches for ${selectedShop.name}.`}
               </p>
               <div className="flex flex-wrap gap-2.5">
                 <button
                   onClick={handleStartQuiz}
-                  className="flex-1 flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-5 py-3 text-sm font-semibold text-espresso-950 shadow-lg hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
+                  className="flex-1 min-h-[48px] flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-600 px-5 py-3 text-sm font-bold text-espresso-950 shadow-lg hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>{t('quizTitle')}</span>
@@ -193,7 +209,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => setShowMatches(true)}
-                  className="flex items-center justify-center gap-2 rounded-xl border border-espresso-700 bg-espresso-950/80 px-4 py-3 text-xs text-parchment-200 hover:border-gold-500/40 cursor-pointer"
+                  className="min-h-[48px] flex items-center justify-center gap-2 rounded-xl border border-espresso-700 bg-espresso-950/80 px-4 py-3 text-xs font-semibold text-parchment-200 hover:border-gold-500/40 cursor-pointer"
                 >
                   <Coffee className="w-4 h-4 text-gold-400" />
                   <span>{language === 'ar' ? 'عرض القائمة مباشرة' : 'Preview Matches'}</span>
@@ -202,80 +218,168 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* Guest Pre-Visit CTA Card */
-          <div className="w-full glass-panel-glow rounded-2xl p-6 sm:p-8 space-y-6 text-left rtl:text-right">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gold-500/15 pb-5">
-              <div>
-                <h2 className="text-lg font-bold text-parchment-50 font-serif">
-                  {language === 'ar' ? 'جاهز قبل ما تروح؟' : 'Ready Before You Go?'}
-                </h2>
-                <p className="text-xs text-parchment-300/70">
-                  {language === 'ar' ? 'افتح حسابك واعمل اختبار الذوق السريع من البيت' : 'Create your profile & discover your coffee dialect from home'}
-                </p>
-              </div>
+          /* Reimagined Guest Experience: The Sensory Front Door & Live Taste Preview */
+          <div className="w-full space-y-6 text-left rtl:text-right">
+            {/* Interactive Taste Mood Selector Card */}
+            <div className="w-full rounded-3xl border-2 border-gold-500/35 bg-gradient-to-br from-espresso-900 via-espresso-950 to-espresso-900 p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
+              <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-gold-500/15 blur-3xl" />
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 shrink-0 w-full sm:w-auto">
-                <button
-                  onClick={handleStartQuiz}
-                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-4 py-2.5 text-xs font-semibold text-espresso-950 shadow-md hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  <span>{language === 'ar' ? 'جرّب الاختبار' : 'Take Quiz'}</span>
-                </button>
+              {/* Teaser Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold-500/15 pb-4">
+                <div className="space-y-1">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-xs font-semibold">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>{language === 'ar' ? 'تجربة سريعة مباشرة' : 'Instant Taste Teaser'}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-parchment-50">
+                    {language === 'ar' ? 'ما النكهة الأقرب إلى مزاجك اليوم؟' : 'What sensory mood craves your palate?'}
+                  </h3>
+                  <p className="text-xs text-parchment-300/80">
+                    {language === 'ar'
+                      ? `المطابقة المباشرة الحية لقائمة ${selectedShop.nameAr}`
+                      : `Live instant match for ${selectedShop.name}`}
+                  </p>
+                </div>
 
                 <button
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-gold-500/40 bg-gold-500/10 px-3.5 py-2.5 text-xs font-semibold text-gold-300 hover:bg-gold-500/20 transition-all cursor-pointer"
+                  className="min-h-[44px] inline-flex items-center justify-center gap-2 rounded-xl border border-gold-500/40 bg-gold-500/10 px-4 py-2 text-xs font-semibold text-gold-300 hover:bg-gold-500/20 transition-all cursor-pointer self-start sm:self-auto shrink-0"
                 >
                   <UserPlus className="w-3.5 h-3.5 text-gold-400" />
                   <span>{t('signUp')}</span>
                 </button>
               </div>
+
+              {/* 4 Tactile Mood Pills */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {[
+                  { id: 'chocolate_nutty', labelAr: 'شوكولاتة وبندق', labelEn: 'Warm Cocoa & Nutty', badge: '🍫' },
+                  { id: 'fruity_floral', labelAr: 'توت بري وياسمين', labelEn: 'Wild Berries & Floral', badge: '🍓' },
+                  { id: 'sweet_caramel', labelAr: 'كراميل وعسل مشرقي', labelEn: 'Honey & Caramel', badge: '🍯' },
+                  { id: 'balanced', labelAr: 'متوازن ومعتدل', labelEn: 'Clean & Balanced', badge: '⚖️' },
+                ].map((mood) => {
+                  const isSelected = guestTasteMood === mood.id;
+                  return (
+                    <button
+                      key={mood.id}
+                      type="button"
+                      onClick={() => setGuestTasteMood(mood.id as any)}
+                      className={`min-h-[48px] flex items-center justify-center gap-2 p-2.5 rounded-2xl border text-xs font-semibold transition-all cursor-pointer ${
+                        isSelected
+                          ? 'border-gold-400 bg-gold-500/20 text-gold-300 shadow-md ring-1 ring-gold-400/50'
+                          : 'border-espresso-700/80 bg-espresso-950/60 text-parchment-300 hover:border-gold-500/30'
+                      }`}
+                    >
+                      <span className="text-base">{mood.badge}</span>
+                      <span className="text-[11px] truncate">{language === 'ar' ? mood.labelAr : mood.labelEn}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Live Preview Match Result Card */}
+              {previewMatch && (
+                <motion.div
+                  key={previewMatch.drink.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-2xl border border-gold-500/30 bg-espresso-950/80 p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 shadow-xl"
+                >
+                  <SensoryCupVisual
+                    temperature={previewMatch.drink.temperature}
+                    type={previewMatch.drink.type}
+                    roast={previewMatch.drink.roast}
+                    milk={previewMatch.drink.milk}
+                    size="sm"
+                  />
+
+                  <div className="flex-1 space-y-1.5 text-center sm:text-left rtl:sm:text-right">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 font-bold border border-gold-500/30">
+                        {previewMatch.score}% {language === 'ar' ? 'توافق متوقع' : 'Expected Match'}
+                      </span>
+                      <span className="text-xs font-serif font-bold text-gold-400">
+                        {previewMatch.drink.priceJOD.toFixed(2)} {language === 'ar' ? 'د.أ' : 'JOD'}
+                      </span>
+                    </div>
+
+                    <h4 className="text-lg font-serif font-bold text-parchment-50">
+                      {language === 'ar' ? previewMatch.drink.nameAr : previewMatch.drink.name}
+                    </h4>
+
+                    <p className="text-xs text-parchment-300/80 line-clamp-2">
+                      &ldquo;{language === 'ar' ? previewMatch.drink.flavorNotesPlainAr : previewMatch.drink.flavorNotesPlain}&rdquo;
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => handleSelectDrink(previewMatch.drink)}
+                    className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-4 py-2.5 text-xs font-bold text-espresso-950 shadow-md hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer shrink-0 w-full sm:w-auto"
+                  >
+                    <Coffee className="w-3.5 h-3.5" />
+                    <span>{language === 'ar' ? 'طلب فوري ☕' : 'Order Now ☕'}</span>
+                  </button>
+                </motion.div>
+              )}
+
+              {/* Primary Onboarding CTA */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                <button
+                  onClick={handleStartQuiz}
+                  className="w-full sm:flex-1 min-h-[50px] flex items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-600 px-5 py-3.5 text-sm font-bold text-espresso-950 shadow-xl hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>{language === 'ar' ? 'إصدار باسبور فيروز الذوقي (٣٠ ثانية)' : 'Unlock Your FayrouzPass™ (30s)'}</span>
+                  <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                </button>
+
+                <button
+                  onClick={() => setShowMatches(true)}
+                  className="w-full sm:w-auto min-h-[50px] flex items-center justify-center gap-2 rounded-2xl border border-espresso-700 bg-espresso-950/80 px-4 py-3.5 text-xs font-semibold text-parchment-200 hover:border-gold-500/40 hover:text-gold-300 transition-colors cursor-pointer"
+                >
+                  <Coffee className="w-4 h-4 text-gold-400" />
+                  <span>{language === 'ar' ? 'عرض القائمة كضيف' : 'Preview Flight as Guest'}</span>
+                </button>
+              </div>
             </div>
 
+            {/* Prestige Membership Artifact Callout */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="rounded-xl border border-espresso-700 bg-espresso-900/60 p-3.5 space-y-1.5">
-                <Zap className="w-4 h-4 text-gold-400" />
-                <div className="font-semibold text-parchment-100">
-                  {language === 'ar' ? '٣٠ ثانية وبس' : '30-Second Quiz'}
+              <div className="rounded-2xl border border-espresso-800 bg-espresso-900/60 p-4 space-y-2 hover:border-gold-500/30 transition-colors">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gold-500/20 text-gold-400 border border-gold-500/30 font-bold">
+                  ⚡
                 </div>
-                <div className="text-parchment-400 text-[11px]">
-                  {language === 'ar' ? '٤ كبسات لمس سريعة، بدون استبيانات وفلسفة زايدة' : '4 quick tactile taps, zero typing or friction'}
+                <div className="font-serif font-bold text-parchment-100 text-sm">
+                  {language === 'ar' ? '٣٠ ثانية من بيتك' : '30-Second Calibration'}
                 </div>
-              </div>
-
-              <div className="rounded-xl border border-espresso-700 bg-espresso-900/60 p-3.5 space-y-1.5">
-                <ShieldCheck className="w-4 h-4 text-fayrouz-400" />
-                <div className="font-semibold text-parchment-100">
-                  {language === 'ar' ? 'باسبور دائم' : 'Persistent Pass'}
-                </div>
-                <div className="text-parchment-400 text-[11px]">
-                  {language === 'ar' ? 'باسبورك الذوقي معك وين ما رحت، بألموند وديمتريس وعنبر' : 'Carry your taste passport to Almond, Dimitri’s & more'}
+                <div className="text-parchment-400 text-[11px] leading-relaxed">
+                  {language === 'ar' ? 'حدد ذوقك قبل ما تطلع، وانسى الحيرة قدام الباريستا' : 'Calibrate your palate from home; zero menu overthinking'}
                 </div>
               </div>
 
-              <div className="rounded-xl border border-espresso-700 bg-espresso-900/60 p-3.5 space-y-1.5">
-                <Award className="w-4 h-4 text-amber-400" />
-                <div className="font-semibold text-parchment-100">
-                  {language === 'ar' ? 'مطابقة ذكية' : 'Smart Palate Match'}
+              <div className="rounded-2xl border border-espresso-800 bg-espresso-900/60 p-4 space-y-2 hover:border-gold-500/30 transition-colors">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-fayrouz-500/20 text-fayrouz-300 border border-fayrouz-500/30 font-bold">
+                  💳
                 </div>
-                <div className="text-parchment-400 text-[11px]">
-                  {language === 'ar' ? '٣ خيارات مضمونة + ١ مغامرة، وبترتاح من الحيرة' : '3 safe matches + 1 adventure pick'}
+                <div className="font-serif font-bold text-parchment-100 text-sm">
+                  {language === 'ar' ? 'باسبور رقمي دائم' : 'Persistent FayrouzPass™'}
+                </div>
+                <div className="text-parchment-400 text-[11px] leading-relaxed">
+                  {language === 'ar' ? 'يعمل في أرقى مقاهي عمّان: ألموند، ديمتريس، وعنبر' : 'Carry your taste ID across Almond, Dimitri’s & Ambar'}
                 </div>
               </div>
-            </div>
 
-            {/* Quick Preview Matches Button for Guests */}
-            <div className="pt-2 text-center">
-              <button
-                onClick={() => setShowMatches(true)}
-                className="inline-flex items-center gap-1.5 text-xs text-gold-400 hover:text-gold-300 font-medium underline cursor-pointer"
-              >
-                <Coffee className="w-3.5 h-3.5" />
-                <span>
-                  {language === 'ar' ? `استعرض خيارات المطابقة في ${selectedShop.nameAr} كضيف` : `Preview 3+1 matches for ${selectedShop.name} as guest`}
-                </span>
-              </button>
+              <div className="rounded-2xl border border-espresso-800 bg-espresso-900/60 p-4 space-y-2 hover:border-gold-500/30 transition-colors">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold">
+                  ☕
+                </div>
+                <div className="font-serif font-bold text-parchment-100 text-sm">
+                  {language === 'ar' ? 'وصفة الباريستا الدقيقة' : 'Barista Dial-In Chit'}
+                </div>
+                <div className="text-parchment-400 text-[11px] leading-relaxed">
+                  {language === 'ar' ? 'تذكرة كاونتر مباشرة مع معايير الاستخلاص الدقيقة' : '1-Tap counter ticket with exact ratio, dose & temp'}
+                </div>
+              </div>
             </div>
           </div>
         )}
