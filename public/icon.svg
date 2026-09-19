@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1412"/>
+      <stop offset="50%" stop-color="#120D0A"/>
+      <stop offset="100%" stop-color="#0A0705"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E5AB"/>
+      <stop offset="40%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#AA7C11"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2DD4BF"/>
+      <stop offset="100%" stop-color="#0D9488"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Rounded Shield -->
+  <rect width="512" height="512" rx="115" fill="url(#bg)"/>
+  <rect x="12" y="12" width="488" height="488" rx="103" fill="none" stroke="url(#gold)" stroke-width="4" stroke-opacity="0.35"/>
+
+  <!-- Luxury Glow Center -->
+  <circle cx="256" cy="256" r="140" fill="#D4AF37" opacity="0.08"/>
+
+  <!-- Center Emblem: Stylized Coffee Roaster Cup & Steam -->
+  <path d="M160 220 C160 310 210 340 256 340 C302 340 352 310 352 220 Z" fill="none" stroke="url(#gold)" stroke-width="16" stroke-linecap="round"/>
+  <!-- Handle -->
+  <path d="M352 240 C385 240 405 260 405 280 C405 305 380 320 345 315" fill="none" stroke="url(#gold)" stroke-width="14" stroke-linecap="round"/>
+  <!-- Cup Base -->
+  <line x1="200" y1="370" x2="312" y2="370" stroke="url(#gold)" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Aromatic Steam Waves (Fayrouz Teal Accent) -->
+  <path d="M225 180 C220 155 235 140 228 120" fill="none" stroke="url(#teal)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M256 190 C252 160 268 145 260 115" fill="none" stroke="url(#gold)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M287 180 C292 155 277 140 284 120" fill="none" stroke="url(#teal)" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- Sparkle Star -->
+  <polygon points="256,65 262,85 282,91 262,97 256,117 250,97 230,91 250,85" fill="url(#gold)"/>
+</svg>

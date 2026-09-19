@@ -57,6 +57,16 @@ export const metadata: Metadata = {
     title: "فـيـروز | Fayrouz — Specialty Coffee Matcher",
     description: "Connect your palate with live specialty coffeehouse menus in Amman in 3 seconds.",
   },
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Fayrouz",
+  },
 };
 
 export const viewport: Viewport = {

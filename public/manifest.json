@@ -1,0 +1,18 @@
+{
+  "name": "فـيـروز | Fayrouz — Specialty Coffee Matcher",
+  "short_name": "Fayrouz",
+  "description": "Find your perfect specialty coffee in Amman in 3 seconds. 3 safe picks + 1 adventure pick.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#120D0A",
+  "theme_color": "#120D0A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
