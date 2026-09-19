@@ -1,12 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Cairo, Inter } from "next/font/google";
+import { Amiri, Aref_Ruqaa, Inter } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 
-const cairo = Cairo({
+const amiri = Amiri({
   subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-cairo",
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-amiri",
+  display: "swap",
+});
+
+const arefRuqaa = Aref_Ruqaa({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  variable: "--font-ruqaa",
   display: "swap",
 });
 
@@ -17,8 +25,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "فيروز | Fayrouz — قهوتك الصح بـ ٣ ثواني",
-  description: "طابق ذوقك مع منيو أي مقهى مختص في ٣ ثواني. ٣ خيارات مضمونة + ١ مغامرة.",
+  title: "فـيـروز | Fayrouz — قهوتك الصح بـ ٣ ثواني",
+  description: "طابق ذوقك مع منيو أي كافيه مختص في ٣ ثواني. ٣ خيارات مضمونة + ١ مغامرة.",
   applicationName: "Fayrouz",
   authors: [{ name: "Noor", url: "https://bynoor.io" }],
   keywords: ["قهوة مختصة", "فيروز", "Fayrouz", "Ambar", "Turath", "System 1", "Arabic coffee"],
@@ -37,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${cairo.variable} ${inter.variable} h-full bg-espresso-950`}>
+    <html lang="en" className={`${amiri.variable} ${arefRuqaa.variable} ${inter.variable} h-full bg-espresso-950`}>
       <body className="min-h-full flex flex-col font-sans bg-espresso-950 text-parchment-50 antialiased selection:bg-gold-500/30 selection:text-gold-200">
         <LanguageProvider>
           {children}
