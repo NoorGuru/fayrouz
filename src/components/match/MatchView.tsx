@@ -10,7 +10,7 @@ import { SensoryFlavorDial } from './SensoryFlavorDial';
 import { TastingFlightTabs, FlightItem } from './TastingFlightTabs';
 import { 
   Sparkles, ArrowRight, Compass, CheckCircle2, Flame, 
-  Snowflake, RotateCcw, Coffee, ShieldCheck, Sliders, Droplet, Wand2
+  Snowflake, RotateCcw, Coffee, ShieldCheck, Sliders, Droplet, Wand2, Scale
 } from 'lucide-react';
 
 interface MatchViewProps {
@@ -253,30 +253,30 @@ export function MatchView({
           </div>
 
           {/* Center Stage: Unified Sommelier Cockpit */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            {/* Column A: Unified Visual Showcase Pedestal & Palate Tuner */}
-            <div className="lg:col-span-6 space-y-4">
-              <div className="relative rounded-2xl bg-espresso-950/80 border border-gold-500/25 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-around gap-4 shadow-xl overflow-hidden group">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Column A: Unified Visual Showcase Pedestal & Palate Tuner (5 cols) */}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="relative rounded-2xl bg-espresso-950/80 border border-gold-500/25 p-5 sm:p-6 flex flex-col items-center justify-center gap-3 shadow-xl group">
                 <div className="pointer-events-none absolute inset-0 bg-radial from-gold-500/5 to-transparent opacity-70" />
 
-                {/* Left Vessel */}
-                <div className="flex flex-col items-center justify-center relative z-10">
+                {/* Craft Cup Vessel */}
+                <div className="flex flex-col items-center justify-center relative z-10 py-1">
                   <SensoryCupVisual
                     temperature={activeDrink.temperature}
                     type={activeDrink.type}
                     roast={activeDrink.roast}
                     milk={activeDrink.milk}
-                    size="md"
+                    size="lg"
                   />
-                  <div className="flex items-center gap-2 pt-2 text-[10px] font-mono uppercase tracking-wider text-parchment-300/90 font-bold">
+                  <div className="flex items-center gap-2 pt-3 text-[11px] font-mono uppercase tracking-wider text-parchment-300 font-bold">
                     {activeDrink.temperature === 'hot' ? (
                       <span className="inline-flex items-center gap-1 text-amber-400">
-                        <Flame className="w-3 h-3" />
+                        <Flame className="w-3.5 h-3.5" />
                         {language === 'ar' ? 'ساخن' : 'HOT'}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-fayrouz-400">
-                        <Snowflake className="w-3 h-3" />
+                        <Snowflake className="w-3.5 h-3.5" />
                         {language === 'ar' ? 'مثلج' : 'ICED'}
                       </span>
                     )}
@@ -289,23 +289,6 @@ export function MatchView({
                         : language === 'ar' ? 'سادة' : 'BLACK'}
                     </span>
                   </div>
-                </div>
-
-                {/* Center Divider / Aura */}
-                <div className="hidden sm:block w-px h-28 bg-gradient-to-b from-transparent via-gold-500/20 to-transparent" />
-
-                {/* Right Radar Dial */}
-                <div className="flex flex-col items-center justify-center relative z-10">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-parchment-400/80 mb-1">
-                    {language === 'ar' ? 'ميزان التناغم' : 'Sensory Balance'}
-                  </div>
-                  <SensoryFlavorDial
-                    flavorNotes={activeDrink.flavorNotes}
-                    roast={activeDrink.roast}
-                    type={activeDrink.type}
-                    milk={activeDrink.milk}
-                    size="sm"
-                  />
                 </div>
               </div>
 
@@ -393,8 +376,8 @@ export function MatchView({
               </div>
             </div>
 
-            {/* Column B: Drink Details, Sensory Quotes, and Extraction Specs */}
-            <div className="lg:col-span-6 space-y-4">
+            {/* Column B: Drink Details & Sommelier Sensory Dossier (7 cols) */}
+            <div className="lg:col-span-7 space-y-4">
               <div>
                 <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-gold-400/90 font-semibold">
                   <span>{activeDrink.type.replace('_', ' ').toUpperCase()}</span>
@@ -422,22 +405,47 @@ export function MatchView({
                 </span>
               </div>
 
-              {/* Plain Sensory Translation Card */}
-              <div className="rounded-2xl bg-espresso-950/80 border border-espresso-800/80 p-4 space-y-2.5">
-                <p className="text-xs sm:text-sm text-parchment-100 font-sans leading-relaxed italic">
-                  &ldquo;{language === 'ar' ? activeDrink.flavorNotesPlainAr : activeDrink.flavorNotesPlain}&rdquo;
-                </p>
+              {/* The Sommelier Sensory Dossier Card: Radar Dial + Translation Quote */}
+              <div className="rounded-2xl bg-espresso-950/80 border border-espresso-800/80 p-4 sm:p-5 space-y-4 shadow-lg">
+                <div className="flex items-center justify-between border-b border-espresso-800/80 pb-2.5">
+                  <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-gold-400 font-bold">
+                    <Scale className="w-3.5 h-3.5 text-gold-400" />
+                    <span>{language === 'ar' ? 'ميزان التناغم الحسي' : 'Sensory Balance Dial'}</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-parchment-400/80">
+                    4-AXIS HARMONY
+                  </span>
+                </div>
 
-                {/* Flavor Notes Tags */}
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {activeDrink.flavorNotes.map((note) => (
-                    <span
-                      key={note}
-                      className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-espresso-900 text-gold-300 border border-gold-500/25 shadow-xs"
-                    >
-                      {note}
-                    </span>
-                  ))}
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+                  {/* Left inside Dossier: Sensory Dial with generous room */}
+                  <div className="sm:col-span-5 flex flex-col items-center justify-center">
+                    <SensoryFlavorDial
+                      flavorNotes={activeDrink.flavorNotes}
+                      roast={activeDrink.roast}
+                      type={activeDrink.type}
+                      milk={activeDrink.milk}
+                      size="sm"
+                    />
+                  </div>
+
+                  {/* Right inside Dossier: Sensory Translation & Flavor Notes */}
+                  <div className="sm:col-span-7 space-y-3">
+                    <p className="text-xs sm:text-sm text-parchment-100 font-sans leading-relaxed italic border-s-2 border-gold-500/40 ps-3">
+                      &ldquo;{language === 'ar' ? activeDrink.flavorNotesPlainAr : activeDrink.flavorNotesPlain}&rdquo;
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 pt-0.5">
+                      {activeDrink.flavorNotes.map((note) => (
+                        <span
+                          key={note}
+                          className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-espresso-900 text-gold-300 border border-gold-500/25 shadow-xs"
+                        >
+                          {note}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
