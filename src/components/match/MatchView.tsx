@@ -10,7 +10,7 @@ import { SensoryFlavorDial } from './SensoryFlavorDial';
 import { TastingFlightTabs, FlightItem } from './TastingFlightTabs';
 import { 
   Sparkles, ArrowRight, Compass, CheckCircle2, Flame, 
-  Snowflake, RotateCcw, Coffee, ShieldCheck
+  Snowflake, RotateCcw, Coffee, ShieldCheck, Sliders, Droplet, Wand2
 } from 'lucide-react';
 
 interface MatchViewProps {
@@ -65,11 +65,40 @@ export function MatchView({
 
   const [selectedFlightIndex, setSelectedFlightIndex] = useState<number>(0);
 
+  // Live On-Deck Palate Tuner State
+  const [customTemp, setCustomTemp] = useState<'hot' | 'iced' | null>(null);
+  const [customMilk, setCustomMilk] = useState<'oat' | 'dairy' | 'black' | null>(null);
+
+  const handleSelectFlightTab = (idx: number) => {
+    setSelectedFlightIndex(idx);
+    setCustomTemp(null);
+    setCustomMilk(null);
+  };
+
   // Active drink being inspected
   const currentScoredDrink = flightDrinks[selectedFlightIndex] || perfectMatch;
-  const currentDrink = currentScoredDrink.drink;
+  const baseDrink = currentScoredDrink.drink;
   const isCurrentHero = selectedFlightIndex === 0;
-  const isCurrentAdventure = currentDrink.isAdventure;
+  const isCurrentAdventure = baseDrink.isAdventure;
+
+  // Resolve dynamic tuned attributes
+  const activeTemp: 'hot' | 'iced' = customTemp || (baseDrink.temperature === 'both' ? 'hot' : baseDrink.temperature);
+  const activeMilk: MenuItem['milk'] = customMilk || baseDrink.milk;
+  const isTuned = (customTemp !== null && customTemp !== baseDrink.temperature) || (customMilk !== null && customMilk !== baseDrink.milk);
+
+  const activeDrink: MenuItem = {
+    ...baseDrink,
+    temperature: activeTemp,
+    milk: activeMilk,
+    specs: {
+      ...baseDrink.specs,
+      milkTexture: activeMilk === 'black'
+        ? (language === 'ar' ? 'نقاء سادة بدون حليب' : 'Pure single-origin clarity')
+        : activeTemp === 'iced'
+        ? (language === 'ar' ? `حليب ${activeMilk === 'oat' ? 'شوفان' : 'كامل الدسم'} مخفوق وبارد فوق ثلج` : `Chilled aerated ${activeMilk} milk over ice`)
+        : (language === 'ar' ? `مايكروفوم حليب ${activeMilk === 'oat' ? 'شوفان' : 'كامل الدسم'} حريري بدرجة ٦٢ مئوية` : `Dense microfoam with ${activeMilk} milk at 62°C`),
+    },
+  };
 
   // Build tabs metadata
   const flightTabs: FlightItem[] = flightDrinks.map((sd, idx) => ({
@@ -90,12 +119,12 @@ export function MatchView({
   const displayedReasons = reasonChips.length > 0
     ? reasonChips.slice(0, 3)
     : [
-        currentDrink.temperature === 'hot'
+        activeDrink.temperature === 'hot'
           ? (language === 'ar' ? 'حرارة دافئة مريحة' : 'Steaming temperature')
           : (language === 'ar' ? 'انتعاش بارد ومثلج' : 'Chilled refreshing finish'),
-        currentDrink.milk === 'oat'
+        activeDrink.milk === 'oat'
           ? (language === 'ar' ? 'حليب شوفان مخملي' : 'Craft oat microfoam')
-          : currentDrink.milk === 'dairy'
+          : activeDrink.milk === 'dairy'
           ? (language === 'ar' ? 'مايكروفوم حليب غني' : 'Rich velvety microfoam')
           : (language === 'ar' ? 'نقاء المصدر بدون حليب' : 'Pure single-origin clarity'),
         language === 'ar' ? 'توازن حموضة وحلاوة طبيعية' : 'Harmonious acidity & sweetness balance',
@@ -114,7 +143,7 @@ export function MatchView({
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl border border-gold-500/20 bg-espresso-950/70 backdrop-blur-md shadow-lg"
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gold-500/15 border border-gold-500/30 text-gold-400 shrink-0">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gold-500/15 border border-gold-500/30 text-gold-400 shrink-0 shadow-inner">
             <Sparkles className="w-5 h-5" />
           </div>
           <div className="text-left rtl:text-right">
@@ -146,14 +175,14 @@ export function MatchView({
         <TastingFlightTabs
           items={flightTabs}
           selectedIndex={selectedFlightIndex}
-          onSelectIndex={setSelectedFlightIndex}
+          onSelectIndex={handleSelectFlightTab}
         />
       </motion.div>
 
       {/* ⭐ THE SOMMELIER HERO STAGE */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={currentDrink.id}
+          key={`${baseDrink.id}-${activeTemp}-${activeMilk}`}
           initial={{ opacity: 0, y: 12, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -12, scale: 0.98 }}
@@ -173,7 +202,7 @@ export function MatchView({
 
           {/* Top Stage Badges */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gold-500/15 pb-4">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {isCurrentHero ? (
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500 text-espresso-950 font-bold text-xs shadow-md">
                   <Sparkles className="w-3.5 h-3.5 fill-espresso-950" />
@@ -190,98 +219,227 @@ export function MatchView({
                   <span>{language === 'ar' ? `الخيار البديل #${selectedFlightIndex}` : `Alternative Pick #${selectedFlightIndex}`}</span>
                 </div>
               )}
+
+              {isTuned && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/35 text-[10px] font-mono font-bold">
+                  <Wand2 className="w-3 h-3" />
+                  <span>{language === 'ar' ? 'تعديلك الخاص' : 'Custom Dial-In'}</span>
+                </span>
+              )}
             </div>
 
-            <div className="flex items-center gap-1.5 font-mono text-xs font-bold px-3 py-1 rounded-full border bg-espresso-950 border-gold-500/30 text-gold-300">
-              <span className="text-sm">{currentScoredDrink.score}%</span>
-              <span className="text-[10px] font-sans font-normal text-parchment-400">
-                {language === 'ar' ? 'توافق الذائقة' : 'Palate Match'}
-              </span>
+            <div className="flex items-center gap-2">
+              {isTuned && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCustomTemp(null);
+                    setCustomMilk(null);
+                  }}
+                  className="text-[11px] text-parchment-300 hover:text-gold-300 underline font-mono flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  <span>{language === 'ar' ? 'استعادة الأصل' : 'Reset'}</span>
+                </button>
+              )}
+
+              <div className="flex items-center gap-1.5 font-mono text-xs font-bold px-3 py-1 rounded-full border bg-espresso-950 border-gold-500/30 text-gold-300 shadow-sm">
+                <span className="text-sm">{currentScoredDrink.score}%</span>
+                <span className="text-[10px] font-sans font-normal text-parchment-400">
+                  {language === 'ar' ? 'توافق الذائقة' : 'Palate Match'}
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Center Stage: Sensory Visual Cup + Flavor Dial + Drink Typography */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-            {/* Visual Cup Vessel Showcase */}
-            <div className="md:col-span-4 flex flex-col items-center justify-center p-3 rounded-2xl bg-espresso-950/60 border border-espresso-800/80">
-              <SensoryCupVisual
-                temperature={currentDrink.temperature}
-                type={currentDrink.type}
-                roast={currentDrink.roast}
-                milk={currentDrink.milk}
-                size="md"
-              />
-              <div className="flex items-center gap-2 pt-2 text-[11px] font-mono uppercase tracking-wider text-parchment-300/80">
-                {currentDrink.temperature === 'hot' ? (
-                  <span className="inline-flex items-center gap-1 text-amber-400">
-                    <Flame className="w-3 h-3" />
-                    {language === 'ar' ? 'ساخن' : 'HOT'}
+          {/* Center Stage: Unified Sommelier Cockpit */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            {/* Column A: Unified Visual Showcase Pedestal & Palate Tuner */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="relative rounded-2xl bg-espresso-950/80 border border-gold-500/25 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-around gap-4 shadow-xl overflow-hidden group">
+                <div className="pointer-events-none absolute inset-0 bg-radial from-gold-500/5 to-transparent opacity-70" />
+
+                {/* Left Vessel */}
+                <div className="flex flex-col items-center justify-center relative z-10">
+                  <SensoryCupVisual
+                    temperature={activeDrink.temperature}
+                    type={activeDrink.type}
+                    roast={activeDrink.roast}
+                    milk={activeDrink.milk}
+                    size="md"
+                  />
+                  <div className="flex items-center gap-2 pt-2 text-[10px] font-mono uppercase tracking-wider text-parchment-300/90 font-bold">
+                    {activeDrink.temperature === 'hot' ? (
+                      <span className="inline-flex items-center gap-1 text-amber-400">
+                        <Flame className="w-3 h-3" />
+                        {language === 'ar' ? 'ساخن' : 'HOT'}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-fayrouz-400">
+                        <Snowflake className="w-3 h-3" />
+                        {language === 'ar' ? 'مثلج' : 'ICED'}
+                      </span>
+                    )}
+                    <span>•</span>
+                    <span className="text-gold-300">
+                      {activeDrink.milk === 'oat'
+                        ? language === 'ar' ? 'شوفان' : 'OAT'
+                        : activeDrink.milk === 'dairy'
+                        ? language === 'ar' ? 'حليب' : 'DAIRY'
+                        : language === 'ar' ? 'سادة' : 'BLACK'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Center Divider / Aura */}
+                <div className="hidden sm:block w-px h-28 bg-gradient-to-b from-transparent via-gold-500/20 to-transparent" />
+
+                {/* Right Radar Dial */}
+                <div className="flex flex-col items-center justify-center relative z-10">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-parchment-400/80 mb-1">
+                    {language === 'ar' ? 'ميزان التناغم' : 'Sensory Balance'}
+                  </div>
+                  <SensoryFlavorDial
+                    flavorNotes={activeDrink.flavorNotes}
+                    roast={activeDrink.roast}
+                    type={activeDrink.type}
+                    milk={activeDrink.milk}
+                    size="sm"
+                  />
+                </div>
+              </div>
+
+              {/* 🎛️ Live On-Deck Palate Tuner Bar */}
+              <div className="rounded-2xl border border-espresso-800 bg-espresso-950/60 p-3 sm:p-3.5 space-y-2.5">
+                <div className="flex items-center justify-between text-[11px] text-gold-400 font-semibold">
+                  <span className="flex items-center gap-1.5 font-mono uppercase tracking-wider text-[10px]">
+                    <Sliders className="w-3.5 h-3.5" />
+                    {language === 'ar' ? 'تعديل المزاج المباشر' : 'Live Palate Tuner'}
                   </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 text-fayrouz-400">
-                    <Snowflake className="w-3 h-3" />
-                    {language === 'ar' ? 'بارد ومثلج' : 'ICED'}
+                  <span className="text-[10px] text-parchment-400 font-sans">
+                    {language === 'ar' ? 'تعديل فوري للحرارة وقوام الحليب' : 'Instant live re-dial'}
                   </span>
-                )}
-                <span>•</span>
-                <span>{currentDrink.roast.toUpperCase()} ROAST</span>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5">
+                  {/* Temperature Toggle */}
+                  <div className="inline-flex p-1 rounded-xl bg-espresso-900/90 border border-espresso-800">
+                    <button
+                      type="button"
+                      onClick={() => setCustomTemp('hot')}
+                      className={`min-h-[36px] flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        activeTemp === 'hot'
+                          ? 'bg-amber-500/25 text-amber-300 border border-amber-500/40 shadow-sm'
+                          : 'text-parchment-400 hover:text-parchment-200'
+                      }`}
+                    >
+                      <Flame className="w-3 h-3 text-amber-400" />
+                      <span>{language === 'ar' ? 'ساخن' : 'Hot'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCustomTemp('iced')}
+                      className={`min-h-[36px] flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        activeTemp === 'iced'
+                          ? 'bg-fayrouz-500/25 text-fayrouz-300 border border-fayrouz-500/40 shadow-sm'
+                          : 'text-parchment-400 hover:text-parchment-200'
+                      }`}
+                    >
+                      <Snowflake className="w-3 h-3 text-fayrouz-400" />
+                      <span>{language === 'ar' ? 'مثلج' : 'Iced'}</span>
+                    </button>
+                  </div>
+
+                  {/* Milk Texture Toggle */}
+                  <div className="inline-flex p-1 rounded-xl bg-espresso-900/90 border border-espresso-800">
+                    <button
+                      type="button"
+                      onClick={() => setCustomMilk('oat')}
+                      className={`min-h-[36px] flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        activeMilk === 'oat'
+                          ? 'bg-gold-500/25 text-gold-300 border border-gold-500/40 shadow-sm'
+                          : 'text-parchment-400 hover:text-parchment-200'
+                      }`}
+                    >
+                      <Droplet className="w-3 h-3 text-gold-400" />
+                      <span>{language === 'ar' ? 'شوفان' : 'Oat'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCustomMilk('dairy')}
+                      className={`min-h-[36px] flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        activeMilk === 'dairy'
+                          ? 'bg-gold-500/25 text-gold-300 border border-gold-500/40 shadow-sm'
+                          : 'text-parchment-400 hover:text-parchment-200'
+                      }`}
+                    >
+                      <Coffee className="w-3 h-3 text-gold-400" />
+                      <span>{language === 'ar' ? 'حليب' : 'Dairy'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCustomMilk('black')}
+                      className={`min-h-[36px] flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        activeMilk === 'black'
+                          ? 'bg-gold-500/25 text-gold-300 border border-gold-500/40 shadow-sm'
+                          : 'text-parchment-400 hover:text-parchment-200'
+                      }`}
+                    >
+                      <Sparkles className="w-3 h-3 text-gold-400" />
+                      <span>{language === 'ar' ? 'سادة' : 'Black'}</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Drink Details & Titles */}
-            <div className="md:col-span-5 space-y-3">
+            {/* Column B: Drink Details, Sensory Quotes, and Extraction Specs */}
+            <div className="lg:col-span-6 space-y-4">
               <div>
-                <div className="text-[10px] font-mono uppercase tracking-widest text-gold-400/90 font-semibold">
-                  {currentDrink.type.replace('_', ' ').toUpperCase()}
+                <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-gold-400/90 font-semibold">
+                  <span>{activeDrink.type.replace('_', ' ').toUpperCase()}</span>
+                  <span>•</span>
+                  <span>{activeDrink.roast.toUpperCase()} ROAST</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-serif font-bold text-parchment-50 tracking-tight leading-snug">
-                  {language === 'ar' ? currentDrink.nameAr : currentDrink.name}
+                  {language === 'ar' ? activeDrink.nameAr : activeDrink.name}
                 </h2>
                 <div className="text-xs text-parchment-300/70 font-medium pt-0.5">
-                  {language === 'ar' ? currentDrink.name : currentDrink.nameAr}
+                  {language === 'ar' ? activeDrink.name : activeDrink.nameAr}
                 </div>
               </div>
 
-              {/* Price Row */}
-              <div className="text-2xl font-serif font-bold text-gold-400">
-                {currentDrink.priceJOD.toFixed(2)}{' '}
-                <span className="text-xs font-sans font-normal text-parchment-400">
-                  {language === 'ar' ? 'د.أ' : 'JOD'}
+              {/* Price & Extraction Summary */}
+              <div className="flex items-baseline gap-3">
+                <span className="text-2xl sm:text-3xl font-serif font-bold text-gold-400">
+                  {activeDrink.priceJOD.toFixed(2)}{' '}
+                  <span className="text-xs font-sans font-normal text-parchment-400">
+                    {language === 'ar' ? 'د.أ' : 'JOD'}
+                  </span>
+                </span>
+                <span className="text-xs font-mono text-parchment-400/80">
+                  {activeDrink.specs.ratio} • {activeDrink.specs.dose}
                 </span>
               </div>
 
-              {/* Plain Sensory Translation */}
-              <div className="rounded-xl bg-espresso-950/80 border border-espresso-800 p-3.5 space-y-2">
+              {/* Plain Sensory Translation Card */}
+              <div className="rounded-2xl bg-espresso-950/80 border border-espresso-800/80 p-4 space-y-2.5">
                 <p className="text-xs sm:text-sm text-parchment-100 font-sans leading-relaxed italic">
-                  &ldquo;{language === 'ar' ? currentDrink.flavorNotesPlainAr : currentDrink.flavorNotesPlain}&rdquo;
+                  &ldquo;{language === 'ar' ? activeDrink.flavorNotesPlainAr : activeDrink.flavorNotesPlain}&rdquo;
                 </p>
 
                 {/* Flavor Notes Tags */}
-                <div className="flex flex-wrap gap-1.5 pt-0.5">
-                  {currentDrink.flavorNotes.map((note) => (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {activeDrink.flavorNotes.map((note) => (
                     <span
                       key={note}
-                      className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-espresso-800 text-gold-300/90 border border-gold-500/20"
+                      className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-espresso-900 text-gold-300 border border-gold-500/25 shadow-xs"
                     >
                       {note}
                     </span>
                   ))}
                 </div>
               </div>
-            </div>
-
-            {/* 4-Axis Sensory Dial Display */}
-            <div className="md:col-span-3 flex flex-col items-center justify-center p-2 rounded-2xl bg-espresso-950/60 border border-espresso-800/80">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-parchment-400/80 mb-1">
-                {language === 'ar' ? 'ميزان التناغم' : 'Sensory Balance'}
-              </div>
-              <SensoryFlavorDial
-                flavorNotes={currentDrink.flavorNotes}
-                roast={currentDrink.roast}
-                type={currentDrink.type}
-                milk={currentDrink.milk}
-                size="sm"
-              />
             </div>
           </div>
 
@@ -308,7 +466,7 @@ export function MatchView({
           </div>
 
           {/* Adventure Reassurance Bridge */}
-          {isCurrentAdventure && currentDrink.adventureReason && (
+          {isCurrentAdventure && activeDrink.adventureReason && (
             <div className="rounded-2xl border border-fayrouz-500/30 bg-fayrouz-950/30 p-4 space-y-1">
               <div className="flex items-center gap-2 text-xs font-bold text-fayrouz-300">
                 <Compass className="w-4 h-4" />
@@ -317,7 +475,7 @@ export function MatchView({
                 </span>
               </div>
               <p className="text-xs text-parchment-200 leading-relaxed">
-                {language === 'ar' ? currentDrink.adventureReasonAr : currentDrink.adventureReason}
+                {language === 'ar' ? activeDrink.adventureReasonAr : activeDrink.adventureReason}
               </p>
             </div>
           )}
@@ -326,7 +484,7 @@ export function MatchView({
           <motion.button
             whileHover={{ scale: 1.015 }}
             whileTap={{ scale: 0.985 }}
-            onClick={() => onSelectDrink(currentDrink)}
+            onClick={() => onSelectDrink(activeDrink)}
             className={`w-full min-h-[52px] flex items-center justify-center gap-3 rounded-2xl px-6 py-4 text-base font-bold shadow-xl transition-all cursor-pointer ${
               isCurrentAdventure
                 ? 'bg-gradient-to-r from-fayrouz-600 via-fayrouz-500 to-teal-400 text-white hover:from-fayrouz-500 hover:to-teal-300'
@@ -336,8 +494,8 @@ export function MatchView({
             <Coffee className="w-5 h-5" />
             <span>
               {language === 'ar'
-                ? `طلب "${currentDrink.nameAr}" بكبسة واحدة ☕`
-                : `Order "${currentDrink.name}" in 1-Tap ☕`}
+                ? `طلب "${activeDrink.nameAr}" بكبسة واحدة ☕`
+                : `Order "${activeDrink.name}" in 1-Tap ☕`}
             </span>
             <ArrowRight className="w-5 h-5 rtl:rotate-180" />
           </motion.button>
