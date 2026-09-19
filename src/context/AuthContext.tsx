@@ -87,47 +87,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const unsubscribeDoc = onSnapshot(
           userRef,
           async (snapshot) => {
+            // Always read current local session so we can MERGE with Firestore data.
+            // This prevents ANY snapshot (stale, rolled-back, or delayed) from
+            // downgrading a locally-completed quiz back to incomplete.
+            const storedSession = localStorage.getItem(STORAGE_KEY);
+            const localUser: UserProfile | null = storedSession ? JSON.parse(storedSession) : null;
+            const localBelongsToThisUser = localUser?.id === firebaseUser.uid;
+
             if (snapshot.exists()) {
               const data = snapshot.data();
-
-              // Don't overwrite a locally-completed quiz with a stale Firestore snapshot.
-              // This prevents the race condition where onSnapshot fires with old data
-              // BEFORE our setDoc write has propagated back from Firestore.
-              const storedSession = localStorage.getItem(STORAGE_KEY);
-              const localUser: UserProfile | null = storedSession ? JSON.parse(storedSession) : null;
               const firestoreHasQuiz = Boolean(data.hasCompletedQuiz);
-              const localHasQuiz = Boolean(localUser?.hasCompletedQuiz);
-              // If local state says quiz done but Firestore says not yet — skip (stale snapshot)
-              if (localHasQuiz && !firestoreHasQuiz && localUser?.id === firebaseUser.uid) {
-                setIsLoading(false);
-                return;
-              }
+              const localHasQuiz = localBelongsToThisUser && Boolean(localUser!.hasCompletedQuiz);
 
-              const profile: UserProfile = {
+              // Log to help debug — remove later
+              console.log('[Fayrouz] onSnapshot fired:', {
+                firestoreHasQuiz,
+                localHasQuiz,
+                hasPendingWrites: snapshot.metadata.hasPendingWrites,
+                fromCache: snapshot.metadata.fromCache,
+              });
+
+              // Merge: quiz completion is a one-way door (false→true, never true→false)
+              const mergedProfile: UserProfile = {
                 id: firebaseUser.uid,
                 name: data.name || firebaseUser.displayName || 'Coffee Enthusiast',
                 email: firebaseUser.email || '',
-                fayrouzPassId: data.fayrouzPassId || null,
-                hasCompletedQuiz: firestoreHasQuiz,
-                assignedDialect: data.assignedDialect || null,
-                assignedHouse: data.assignedHouse || null,
-                tasteProfile: data.tasteProfile || null,
+                // Use whichever source says quiz is done
+                hasCompletedQuiz: firestoreHasQuiz || localHasQuiz,
+                fayrouzPassId: data.fayrouzPassId || (localBelongsToThisUser ? localUser!.fayrouzPassId : null) || null,
+                assignedDialect: data.assignedDialect || (localBelongsToThisUser ? localUser!.assignedDialect : null) || null,
+                assignedHouse: data.assignedHouse || (localBelongsToThisUser ? localUser!.assignedHouse : null) || null,
+                tasteProfile: data.tasteProfile || (localBelongsToThisUser ? localUser!.tasteProfile : null) || null,
                 createdAt: data.createdAt ? new Date(data.createdAt.seconds * 1000).toISOString() : new Date().toISOString(),
               };
-              saveUserSession(profile);
+              saveUserSession(mergedProfile);
             } else {
-              // Document doesn't exist yet, initialize it.
-              // But first check: did the user just complete the quiz locally?
-              // If so, carry that data over instead of resetting to empty.
-              const storedSession = localStorage.getItem(STORAGE_KEY);
-              const localUser: UserProfile | null = storedSession ? JSON.parse(storedSession) : null;
-              const localBelongsToThisUser = localUser?.id === firebaseUser.uid;
-
+              // Document doesn't exist yet — initialize it, preserving any local quiz data
               const newProfile: UserProfile = {
                 id: firebaseUser.uid,
-                name: localBelongsToThisUser ? (localUser!.name || firebaseUser.displayName || 'User') : (firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'User')),
+                name: localBelongsToThisUser
+                  ? (localUser!.name || firebaseUser.displayName || 'User')
+                  : (firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'User')),
                 email: firebaseUser.email || '',
-                // Preserve quiz data if it already exists locally for this user
                 fayrouzPassId: localBelongsToThisUser ? (localUser!.fayrouzPassId ?? null) : null,
                 hasCompletedQuiz: localBelongsToThisUser ? Boolean(localUser!.hasCompletedQuiz) : false,
                 assignedDialect: localBelongsToThisUser ? (localUser!.assignedDialect ?? null) : null,
