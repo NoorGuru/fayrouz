@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { X, Sparkles, LogOut, RotateCcw, CheckCircle2, Award } from 'lucide-react';
+import { X, Sparkles, LogOut, RotateCcw, CheckCircle2, Award, Share2, Check } from 'lucide-react';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -15,6 +15,31 @@ interface ProfileModalProps {
 export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps) {
   const { user, logout } = useAuth();
   const { t, language } = useLanguage();
+  const [copiedPass, setCopiedPass] = useState(false);
+
+  const handleSharePass = async () => {
+    if (!user) return;
+    const shareText = language === 'ar'
+      ? `لهجتي الذوقية في القهوة هي "${user.assignedDialect}" (${user.assignedHouse}) برقم باسبور ${user.fayrouzPassId}! اكتشف قهوتك الصح في عمّان:`
+      : `My Coffee Dialect on Fayrouz is "${user.assignedDialect}" (${user.assignedHouse}) with Pass ID ${user.fayrouzPassId}! Find your match in Amman:`;
+    const shareUrl = `https://fayrouz.bynoor.io?pass=${user.fayrouzPassId}`;
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: 'FayrouzPass™',
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch {
+        // dismissed
+      }
+    } else {
+      navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      setCopiedPass(true);
+      setTimeout(() => setCopiedPass(false), 2000);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -117,16 +142,35 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
         {/* Profile Actions */}
         <div className="space-y-2 text-xs">
           {user.hasCompletedQuiz && (
-            <button
-              onClick={() => {
-                onClose();
-                onStartQuiz();
-              }}
-              className="w-full flex items-center justify-center gap-2 rounded-xl border border-espresso-700 bg-espresso-950/60 px-4 py-2.5 text-parchment-200 hover:border-gold-500/40 hover:text-gold-400 transition-colors cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>{t('retakeQuiz')}</span>
-            </button>
+            <>
+              <button
+                onClick={handleSharePass}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500/15 to-gold-600/15 border border-gold-500/35 px-4 py-2.5 text-gold-300 hover:text-gold-200 hover:bg-gold-500/25 transition-all cursor-pointer font-medium"
+              >
+                {copiedPass ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-green-400" />
+                    <span>{language === 'ar' ? 'تم نسخ باسبورك ورابط الموقع!' : 'Pass & Link Copied!'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5 text-gold-400" />
+                    <span>{language === 'ar' ? 'مشاركة باسبور فيروز مع أصحابك' : 'Share My FayrouzPass™'}</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={() => {
+                  onClose();
+                  onStartQuiz();
+                }}
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-espresso-700 bg-espresso-950/60 px-4 py-2.5 text-parchment-200 hover:border-gold-500/40 hover:text-gold-400 transition-colors cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>{t('retakeQuiz')}</span>
+              </button>
+            </>
           )}
 
           <button

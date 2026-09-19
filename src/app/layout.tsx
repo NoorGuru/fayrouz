@@ -26,11 +26,37 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "فـيـروز | Fayrouz — قهوتك الصح بـ ٣ ثواني",
-  description: "طابق ذوقك مع منيو أي كافيه مختص في ٣ ثواني. ٣ خيارات مضمونة + ١ مغامرة.",
+  title: "فـيـروز | Fayrouz — System 1 Specialty Coffee Matcher",
+  description: "طابق ذوقك مع منيو أي كافيه مختص في ٣ ثواني. ٣ خيارات مضمونة + ١ مغامرة بدون حيرة. Specialty coffee palate matching in Amman, Jordan.",
   applicationName: "Fayrouz",
+  metadataBase: new URL("https://fayrouz.bynoor.io"),
   authors: [{ name: "Noor", url: "https://bynoor.io" }],
-  keywords: ["قهوة مختصة", "فيروز", "Fayrouz", "Ambar", "Turath", "Arabic coffee"],
+  keywords: [
+    "قهوة مختصة",
+    "فيروز",
+    "Fayrouz",
+    "Almond Coffee House",
+    "Dimitri's Coffee",
+    "Bunni Roastery",
+    "Būn Fellows",
+    "Ambar",
+    "Amman Specialty Coffee",
+    "Coffee Dialects",
+    "FayrouzPass",
+  ],
+  openGraph: {
+    title: "فـيـروز | Fayrouz — System 1 Specialty Coffee Matcher",
+    description: "Eliminate specialty coffee menu paralysis in Amman. 3 safe picks + 1 adventure pick with 1-tap barista ticket.",
+    url: "https://fayrouz.bynoor.io",
+    siteName: "Fayrouz (فيروز)",
+    locale: "ar_JO",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "فـيـروز | Fayrouz — Specialty Coffee Matcher",
+    description: "Connect your palate with live specialty coffeehouse menus in Amman in 3 seconds.",
+  },
 };
 
 export const viewport: Viewport = {

@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { QRCodeSVG } from 'qrcode.react';
 import { useLanguage } from '@/context/LanguageContext';
 import { MenuItem, CoffeeShop } from '@/data/coffeehouses';
 import { UserProfile } from '@/context/AuthContext';
 import confetti from 'canvas-confetti';
 import { 
   X, Sparkles, Check, Flame, Snowflake, Coffee, Sliders, Droplet, 
-  CheckCircle2, Heart, Copy
+  CheckCircle2, Heart, Copy, QrCode, Share2
 } from 'lucide-react';
 
 interface BaristaTicketModalProps {
@@ -30,6 +31,8 @@ export function BaristaTicketModal({
   const [isOrdered, setIsOrdered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [copiedPass, setCopiedPass] = useState(false);
+  const [showQr, setShowQr] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const passId = user?.fayrouzPassId || 'FYZ-GUEST';
   const customerName = user?.name || (language === 'ar' ? 'ضيف فيروز' : 'Special Guest');
@@ -38,6 +41,26 @@ export function BaristaTicketModal({
     navigator.clipboard.writeText(passId);
     setCopiedPass(true);
     setTimeout(() => setCopiedPass(false), 2000);
+  };
+
+  const handleShareTicket = async () => {
+    if (!drink) return;
+    const shareData = {
+      title: `Fayrouz: ${drink.name}`,
+      text: `Ordered "${drink.name}" at ${coffeeShop.name} with ratio ${drink.specs.ratio} using Fayrouz!`,
+      url: 'https://fayrouz.bynoor.io',
+    };
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {
+        // dismissed
+      }
+    } else {
+      navigator.clipboard.writeText(`https://fayrouz.bynoor.io?pass=${passId}&drink=${encodeURIComponent(drink.id)}`);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
   };
 
   const handleOrderPlaced = () => {
@@ -183,43 +206,78 @@ export function BaristaTicketModal({
               </div>
             </div>
 
-            {/* Barista Dial-In Cheat Sheet */}
+            {/* Barista Dial-In Cheat Sheet or QR Code */}
             <div className="rounded-2xl border border-gold-500/20 bg-espresso-950/80 p-3.5 space-y-2.5">
               <div className="flex items-center justify-between text-xs text-gold-400 font-semibold border-b border-espresso-800 pb-1.5">
                 <span className="flex items-center gap-1.5">
                   <Sliders className="w-3.5 h-3.5" />
                   {t('recipeSpecs')}
                 </span>
-                <span className="text-[10px] text-parchment-400 font-mono">
-                  Amman Extraction Ratio
-                </span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="rounded-xl border border-espresso-800 bg-espresso-900/60 p-2 space-y-0.5">
-                  <div className="text-[10px] text-parchment-400 uppercase">{t('ratio')}</div>
-                  <div className="font-mono font-bold text-parchment-100">{drink.specs.ratio}</div>
-                </div>
-
-                <div className="rounded-xl border border-espresso-800 bg-espresso-900/60 p-2 space-y-0.5">
-                  <div className="text-[10px] text-parchment-400 uppercase">{t('dose')}</div>
-                  <div className="font-mono font-bold text-parchment-100">{drink.specs.dose}</div>
-                </div>
-
-                <div className="rounded-xl border border-espresso-800 bg-espresso-900/60 p-2 space-y-0.5">
-                  <div className="text-[10px] text-parchment-400 uppercase">{t('temp')}</div>
-                  <div className="font-mono font-bold text-parchment-100">{drink.specs.waterTemp}</div>
-                </div>
-              </div>
-
-              {drink.specs.milkTexture && (
-                <div className="text-[11px] text-parchment-300/80 text-center pt-0.5">
-                  ✨{' '}
-                  <span className="text-gold-400/90 font-medium">
-                    {language === 'ar' ? 'توجيه التبخير: ' : 'Microfoam target: '}
+                <button
+                  type="button"
+                  onClick={() => setShowQr(!showQr)}
+                  className="flex items-center gap-1.5 text-[11px] text-gold-300 hover:text-gold-200 bg-gold-500/15 border border-gold-500/30 px-2.5 py-0.5 rounded-lg transition-colors cursor-pointer font-medium"
+                >
+                  <QrCode className="w-3.5 h-3.5" />
+                  <span>
+                    {showQr
+                      ? (language === 'ar' ? 'عرض الأرقام' : 'View Numbers')
+                      : (language === 'ar' ? 'مسح QR للباريستا' : 'Barista QR')}
                   </span>
-                  {language === 'ar' ? drink.specs.milkTextureAr || drink.specs.milkTexture : drink.specs.milkTexture}
+                </button>
+              </div>
+
+              {showQr ? (
+                <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-parchment-50 text-espresso-950 space-y-2 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="p-2 bg-white rounded-lg shadow-sm border border-gold-500/30">
+                    <QRCodeSVG
+                      value={`https://fayrouz.bynoor.io/ticket?shop=${encodeURIComponent(coffeeShop.id)}&drink=${encodeURIComponent(drink.id)}&pass=${passId}&ratio=${encodeURIComponent(drink.specs.ratio)}`}
+                      size={125}
+                      level="M"
+                      bgColor="#FFFFFF"
+                      fgColor="#120D0A"
+                    />
+                  </div>
+                  <div className="text-center space-y-0.5">
+                    <div className="text-[11px] font-bold font-mono text-espresso-950">
+                      {passId} • {drink.specs.ratio}
+                    </div>
+                    <div className="text-[10px] text-espresso-800/80">
+                      {language === 'ar'
+                        ? 'امسح بكاميرا الهاتف لقراءة تفاصيل الاستخلاص فوراً'
+                        : 'Scan with phone camera for instant extraction specs'}
+                    </div>
+                  </div>
                 </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div className="rounded-xl border border-espresso-800 bg-espresso-900/60 p-2 space-y-0.5">
+                      <div className="text-[10px] text-parchment-400 uppercase">{t('ratio')}</div>
+                      <div className="font-mono font-bold text-parchment-100">{drink.specs.ratio}</div>
+                    </div>
+
+                    <div className="rounded-xl border border-espresso-800 bg-espresso-900/60 p-2 space-y-0.5">
+                      <div className="text-[10px] text-parchment-400 uppercase">{t('dose')}</div>
+                      <div className="font-mono font-bold text-parchment-100">{drink.specs.dose}</div>
+                    </div>
+
+                    <div className="rounded-xl border border-espresso-800 bg-espresso-900/60 p-2 space-y-0.5">
+                      <div className="text-[10px] text-parchment-400 uppercase">{t('temp')}</div>
+                      <div className="font-mono font-bold text-parchment-100">{drink.specs.waterTemp}</div>
+                    </div>
+                  </div>
+
+                  {drink.specs.milkTexture && (
+                    <div className="text-[11px] text-parchment-300/80 text-center pt-0.5">
+                      ✨{' '}
+                      <span className="text-gold-400/90 font-medium">
+                        {language === 'ar' ? 'توجيه التبخير: ' : 'Microfoam target: '}
+                      </span>
+                      {language === 'ar' ? drink.specs.milkTextureAr || drink.specs.milkTexture : drink.specs.milkTexture}
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
@@ -238,9 +296,18 @@ export function BaristaTicketModal({
                     ? 'border-red-500 bg-red-500/20 text-red-400'
                     : 'border-espresso-700 bg-espresso-950/80 text-parchment-300 hover:border-gold-500/40'
                 }`}
-                title="Favorite"
+                title={language === 'ar' ? 'إضافة للمفضلة' : 'Favorite'}
               >
                 <Heart className={`w-4 h-4 ${isFavorited ? 'fill-red-400' : ''}`} />
+              </motion.button>
+
+              <motion.button
+                whileTap={{ scale: 0.92 }}
+                onClick={handleShareTicket}
+                className="p-3 rounded-xl border border-espresso-700 bg-espresso-950/80 text-parchment-300 hover:border-gold-500/40 hover:text-gold-300 transition-colors cursor-pointer"
+                title={language === 'ar' ? 'مشاركة التذكرة' : 'Share Ticket'}
+              >
+                {copiedLink ? <Check className="w-4 h-4 text-green-400" /> : <Share2 className="w-4 h-4" />}
               </motion.button>
 
               <motion.button
