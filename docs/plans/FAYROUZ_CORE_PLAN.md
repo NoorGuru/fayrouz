@@ -59,6 +59,17 @@ This new platform works in tandem with the existing interactive demo and kiosk s
    - **Folder:** `../fayrouz-demo/src/components/pitch/`
    - Dark luxury espresso theme (`#120D0A`, `#1A1412`), warm alabaster parchment (`#FBF9F5`), brushed gold accents (`#D4AF37`), and native Arabic calligraphy typography.
 
+### Pitch Alignment: Delivering the Exact Narrative from the Demo (`GuidedPitchModal.jsx`)
+
+The real platform in `NoorGuru/fayrouz` builds the **exact thesis and commercial promise** pitched in the demo:
+
+| Demo Pitch Script (`GuidedPitchModal.jsx`) | How the Real Platform Executes It |
+| :--- | :--- |
+| **Pitch Step 1: "The Counter Chaos"**<br>“25+ esoteric choices. Customers freeze with choice paralysis. Allergen questions cause hesitation. The average line slows to 95 seconds per order.” | **The Solution:** Completely removes the 25-item catalog overwhelm by delivering an instant, high-confidence Hero Recommendation. |
+| **Pitch Step 2: "The Taste Passport"**<br>“Captures dietary guardrails, flavor pillars, roast depth, and sweetness calibration in just 30 seconds, minting their unique Taste Passport.” | **The Solution:** The 30-second mobile quiz captures milk texture, flavor pillars, and temperature preferences without requiring an account or password. |
+| **Pitch Step 3: "The 3+1 Decision Engine"**<br>“The 25-item catalog transforms instantly into 3 hyper-personalized matches plus 1 curated discovery pick... drops ordering from 95s to 14s.” | **The Solution:** The exact "3 Safe Matches + 1 Adventure Pick" UI with 1-tap barista ticket generation. |
+| **Pitch Step 4: "Allergen Safety & High-Margin ROI"**<br>“Dairy lattes auto-swap to oat milk... Result: +22% ticket lift and 100% allergen compliance.” | **The Solution:** Automatic milk & dietary filtering plus the "Adventure Pick" that sells high-margin specialty micro-lots. |
+
 ---
 
 ## 3. The System 1 Decision Architecture ("3 + 1" Pattern)
