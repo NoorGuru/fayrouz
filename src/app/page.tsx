@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
 import { AuthModal } from '@/components/auth/AuthModal';
@@ -29,6 +29,22 @@ export default function Home() {
   // Task 6 Barista Ticket Modal State
   const [selectedTicketDrink, setSelectedTicketDrink] = useState<MenuItem | null>(null);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
+
+  // In-Store Table Tent QR detection (e.g. ?venue=almond or ?venue=dimitris)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const venueParam = params.get('venue');
+      if (venueParam) {
+        const found = COFFEE_SHOPS.find(
+          (s) => s.id.toLowerCase() === venueParam.toLowerCase() || s.name.toLowerCase().includes(venueParam.toLowerCase())
+        );
+        if (found) {
+          setSelectedShop(found);
+        }
+      }
+    }
+  }, []);
 
   const handleStartQuiz = () => {
     setIsQuizModalOpen(true);

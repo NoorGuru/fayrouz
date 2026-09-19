@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { QRCodeSVG } from 'qrcode.react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { X, Sparkles, LogOut, RotateCcw, CheckCircle2, Award, Share2, Check } from 'lucide-react';
+import { X, Sparkles, LogOut, RotateCcw, CheckCircle2, Award, Share2, Check, QrCode } from 'lucide-react';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
   const { user, logout } = useAuth();
   const { t, language } = useLanguage();
   const [copiedPass, setCopiedPass] = useState(false);
+  const [showPassQr, setShowPassQr] = useState(false);
 
   const handleSharePass = async () => {
     if (!user) return;
@@ -96,15 +98,61 @@ export function ProfileModal({ isOpen, onClose, onStartQuiz }: ProfileModalProps
               {t('navPass')}
             </span>
             {user.hasCompletedQuiz && user.fayrouzPassId ? (
-              <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-gold-500/20 text-gold-300 border border-gold-500/30">
-                {user.fayrouzPassId}
-              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowPassQr(!showPassQr)}
+                  className="flex items-center gap-1 text-[11px] font-mono text-gold-300 hover:text-gold-200 bg-gold-500/15 border border-gold-500/30 px-2 py-0.5 rounded-lg transition-colors cursor-pointer"
+                >
+                  <QrCode className="w-3 h-3" />
+                  <span>{showPassQr ? (language === 'ar' ? 'إغلاق' : 'Close') : (language === 'ar' ? 'الباركود' : 'QR')}</span>
+                </button>
+                <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-gold-500/20 text-gold-300 border border-gold-500/30">
+                  {user.fayrouzPassId}
+                </span>
+              </div>
             ) : (
               <span className="text-[11px] text-parchment-400/80 bg-espresso-800 px-2 py-0.5 rounded">
                 {language === 'ar' ? 'بانتظار الاختبار' : 'Quiz Pending'}
               </span>
             )}
           </div>
+
+          {showPassQr && user.hasCompletedQuiz && user.fayrouzPassId && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center justify-center p-3 rounded-xl bg-parchment-50 text-espresso-950 space-y-2 border border-gold-500/40"
+            >
+              <div className="p-2 bg-white rounded-lg shadow-sm">
+                <QRCodeSVG
+                  value={`https://fayrouz.bynoor.io/ticket/?pass=${encodeURIComponent(user.fayrouzPassId)}`}
+                  size={130}
+                  level="H"
+                  bgColor="#FFFFFF"
+                  fgColor="#120D0A"
+                  imageSettings={{
+                    src: '/icon.svg',
+                    x: undefined,
+                    y: undefined,
+                    height: 28,
+                    width: 28,
+                    excavate: true,
+                  }}
+                />
+              </div>
+              <div className="text-center">
+                <div className="text-[11px] font-bold font-mono text-espresso-950">
+                  {user.fayrouzPassId}
+                </div>
+                <div className="text-[10px] text-espresso-800/80">
+                  {language === 'ar'
+                    ? 'امسح في أي كافيه بعمّان لعرض ذائقتك'
+                    : 'Permanent Member Pass QR for Amman Baristas'}
+                </div>
+              </div>
+            </motion.div>
+          )}
 
           {user.hasCompletedQuiz && user.assignedDialect ? (
             <div className="space-y-2 pt-2 border-t border-espresso-800">

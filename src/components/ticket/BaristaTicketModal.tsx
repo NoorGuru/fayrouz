@@ -231,11 +231,19 @@ export function BaristaTicketModal({
                 <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-parchment-50 text-espresso-950 space-y-2 animate-in fade-in zoom-in-95 duration-200">
                   <div className="p-2 bg-white rounded-lg shadow-sm border border-gold-500/30">
                     <QRCodeSVG
-                      value={`https://fayrouz.bynoor.io/ticket?shop=${encodeURIComponent(coffeeShop.id)}&drink=${encodeURIComponent(drink.id)}&pass=${passId}&ratio=${encodeURIComponent(drink.specs.ratio)}`}
-                      size={125}
-                      level="M"
+                      value={`https://fayrouz.bynoor.io/ticket/?shop=${encodeURIComponent(coffeeShop.id)}&drink=${encodeURIComponent(drink.id)}&pass=${passId}&ratio=${encodeURIComponent(drink.specs.ratio)}`}
+                      size={135}
+                      level="H"
                       bgColor="#FFFFFF"
                       fgColor="#120D0A"
+                      imageSettings={{
+                        src: '/icon.svg',
+                        x: undefined,
+                        y: undefined,
+                        height: 28,
+                        width: 28,
+                        excavate: true,
+                      }}
                     />
                   </div>
                   <div className="text-center space-y-0.5">
