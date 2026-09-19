@@ -9,7 +9,7 @@
 
 ## Batch A — High impact, low effort (do first, one at a time)
 
-- [ ] **A1. Guest CTA hierarchy** (`src/app/page.tsx` ~L208)
+- [x] **A1. Guest CTA hierarchy** (implemented: quiz is gradient primary, sign-up demoted to ghost, preview stays tertiary link) (`src/app/page.tsx` ~L208)
   - Problem: Take Quiz + Sign Up + Preview-as-guest compete.
   - Plan-to-confirm: one primary (Start Quiz), rest as text links.
   - Done when: single primary CTA on guest card.
