@@ -15,58 +15,80 @@ interface Translations {
 export const translations: Translations = {
   // Brand & Header
   brandName: { en: 'FAYROUZ', ar: 'فـيـروز' },
-  brandTagline: { en: 'System 1 Coffee Matcher', ar: 'مُطابق القهوة الفوري' },
-  brandSubtext: { en: 'Connect your palate to the coffeehouse menu in 3 seconds.', ar: 'طابق ذائقتك مع قائمة المقهى المختص في ٣ ثوانٍ بدون حيرة.' },
+  brandTagline: { en: 'System 1 Coffee Matcher', ar: 'قهوتك الصح بـ ٣ ثواني وبدون حيرة' },
+  brandSubtext: { 
+    en: 'Connect your palate to the coffeehouse menu in 3 seconds.', 
+    ar: 'طابق ذوقك مع منيو أي كافيه مختص بـ ٣ ثواني، بدون لف ودوران ومصطلحات معقدة.' 
+  },
   
   // Navigation & Actions
   navHome: { en: 'Match', ar: 'المطابقة' },
-  navQuiz: { en: 'Sensory Quiz', ar: 'اختبار الذوق' },
+  navQuiz: { en: 'Taste Quiz', ar: 'اختبار الذوق' },
   navPass: { en: 'FayrouzPass™', ar: 'جواز فيروز' },
-  navShops: { en: 'Venues', ar: 'المقاهي' },
+  navShops: { en: 'Coffeehouses', ar: 'المقاهي' },
   signIn: { en: 'Sign In', ar: 'تسجيل الدخول' },
-  signUp: { en: 'Create Account', ar: 'إنشاء حساب' },
+  signUp: { en: 'Create Account', ar: 'إنشاء حساب جديد' },
   signOut: { en: 'Sign Out', ar: 'تسجيل الخروج' },
-  profile: { en: 'My Palate', ar: 'ملف الذائقة' },
-  retakeQuiz: { en: 'Retake Quiz', ar: 'إعادة الاختبار' },
+  profile: { en: 'My Palate', ar: 'ملفي الذوقي' },
+  retakeQuiz: { en: 'Retake Quiz', ar: 'جرّب الاختبار من جديد' },
 
   // JEV Hero Match Elements
-  perfectMatchBadge: { en: '⭐ #1 YOUR PERFECT MATCH', ar: '⭐ #1 اختيارك المثالي المؤكد' },
-  matchConfidence: { en: 'Match Confidence', ar: 'نسبة التوافق' },
-  orderInOneTap: { en: 'Show Barista Ticket', ar: 'عرض تذكرة الطلب للباريستا' },
-  topAlternatives: { en: 'Top Safe Alternatives', ar: 'خيارات آمنة بديلة' },
-  adventureTitle: { en: '🧪 Wanna Try Something New?', ar: '🧪 هل تود تجربة نكهة غير مألوفة؟' },
+  perfectMatchBadge: { en: '⭐ #1 YOUR PERFECT MATCH', ar: '⭐ #1 طلبك المضمون (على ذوقك بالملي)' },
+  matchConfidence: { en: 'Match Confidence', ar: 'نسبة التوافق مع ذوقك' },
+  orderInOneTap: { en: 'Show Barista Ticket', ar: 'ورّي الشاشة للباريستا ☕' },
+  topAlternatives: { en: 'Top Safe Alternatives', ar: 'خيارات رايقة ومضمونة ثانية' },
+  adventureTitle: { en: '🧪 Wanna Try Something New?', ar: '🧪 ودّك تجرّب شي جديد ومختلف؟' },
   adventureBadge: { en: 'Adventure Pick', ar: 'خيار المغامرة' },
-  adventureButton: { en: 'Try This Adventure', ar: 'أنا مستعد للتجربة' },
+  adventureButton: { en: 'Try This Adventure', ar: 'جاهز للمغامرة 🚀' },
   
   // Barista Ticket Modal
-  baristaTicketTitle: { en: 'Barista Order Ticket', ar: 'تذكرة طلب الباريستا' },
-  baristaTicketSubtext: { en: 'Hold this card up at the counter for instant 1-tap extraction.', ar: 'أظهر هذه البطاقة للباريستا عند الكاونتر لتحضير كوبك بدقة.' },
-  recipeSpecs: { en: 'Barista Dial-In Parameters', ar: 'معايير التحضير والاستخلاص' },
-  ratio: { en: 'Ratio', ar: 'النسبة' },
-  dose: { en: 'Dose', ar: 'الجرعة' },
+  baristaTicketTitle: { en: 'Barista Order Ticket', ar: 'تذكرة الطلب للباريستا' },
+  baristaTicketSubtext: { 
+    en: 'Hold this card up at the counter for instant 1-tap extraction.', 
+    ar: 'ورّي هالشاشة للباريستا وهو يضبط لك الكوب على أصوله وبالمقاييس الصح 👌' 
+  },
+  recipeSpecs: { en: 'Barista Dial-In Parameters', ar: 'معايير الاستخلاص والتحضير' },
+  ratio: { en: 'Ratio', ar: 'نسبة الاستخلاص' },
+  dose: { en: 'Dose', ar: 'الجرعة (Dose)' },
   temp: { en: 'Water Temp', ar: 'حرارة الماء' },
-  milkTexture: { en: 'Milk Texture', ar: 'قوام الحليب' },
-  close: { en: 'Close', ar: 'إغلاق' },
+  milkTexture: { en: 'Milk Texture', ar: 'قوام الحليب المايكروفوم' },
+  close: { en: 'Close', ar: 'تم / إغلاق' },
   
   // Coffeehouses
-  selectVenue: { en: 'Select Coffeehouse', ar: 'اختر المقهى المختص' },
+  selectVenue: { en: 'Select Coffeehouse', ar: 'وين حابب تشرب قهوتك اليوم؟' },
   changeVenue: { en: 'Change Coffeehouse', ar: 'تغيير المقهى' },
-  activeMenu: { en: 'Live Roastery Menu', ar: 'قائمة التحميص المباشرة' },
+  activeMenu: { en: 'Live Roastery Menu', ar: 'قائمة حبوب اليوم المباشرة' },
 
   // Sensory Quiz
-  quizTitle: { en: 'Discover Your Coffee Dialect', ar: 'اكتشف لهجتك الذوقية في القهوة' },
-  quizSubtitle: { en: '4 quick sensory choices. No typing. 30 seconds.', ar: '٤ خيارات حسية سريعة. بدون كتابة. خلال ٣٠ ثانية.' },
-  questionMilk: { en: 'How do you like your coffee textured?', ar: 'كيف تفضل قوام قهوتك؟' },
-  questionFlavor: { en: 'What flavor note excites your palate today?', ar: 'ما النغمة النكهية التي تشتهيها اليوم؟' },
-  questionTemp: { en: 'Temperature Preference', ar: 'حرارة المشروب' },
-  questionIntensity: { en: 'Roast & Body Intensity', ar: 'كثافة وقوة المشروب' },
-  saveProfile: { en: 'Generate My FayrouzPass™', ar: 'إصدار جواز فيروز الذوقي' },
+  quizTitle: { en: 'Discover Your Coffee Dialect', ar: 'اكتشف لهجتك ونوع ذوقك بالقهوة' },
+  quizSubtitle: { 
+    en: '4 quick sensory choices. No typing. 30 seconds.', 
+    ar: '٤ خيارات لمس سريعة.. بدون فلسفة واستبيانات طويلة بـ ٣٠ ثانية' 
+  },
+  questionMilk: { en: 'How do you like your coffee textured?', ar: 'كيف تحب قوام الحليب بكوبك؟' },
+  questionFlavor: { en: 'What flavor note excites your palate today?', ar: 'شو النكهة اللي مشتهيها بكوبك اليوم؟' },
+  questionTemp: { en: 'Temperature Preference', ar: 'حار يدفّي ولا بارد يسرسح؟' },
+  questionIntensity: { en: 'Roast & Body Intensity', ar: 'ثقل وكثافة الكوب (خفيف ورايق ولا يصحصحك؟)' },
+  saveProfile: { en: 'Generate My FayrouzPass™', ar: 'طلّع جواز فيروز الذوقي الخاص فيك 🎫' },
   
   // Dietary Safeguards
-  dietaryTitle: { en: 'Dietary Safeguards', ar: 'تفضيلات وحساسيات غذائية' },
-  veganBadge: { en: 'Vegan', ar: 'نباتي' },
-  nutFreeBadge: { en: 'Nut-Free', ar: 'خالٍ من المكسرات' },
-  lactoseFreeBadge: { en: 'Lactose-Free', ar: 'خالٍ من اللاكتوز' },
+  dietaryTitle: { en: 'Dietary Safeguards', ar: 'تفضيلات وحساسيات خاصة' },
+  veganBadge: { en: 'Vegan', ar: 'نباتي 🌿' },
+  nutFreeBadge: { en: 'Nut-Free', ar: 'خالٍ من المكسرات 🥜' },
+  lactoseFreeBadge: { en: 'Lactose-Free', ar: 'خالٍ من اللاكتوز 🥛' },
+
+  // Auth & Account
+  authModalTitle: { en: 'Join the Fayrouz Circle', ar: 'انضم لمجتمع فيروز الذوقي' },
+  authModalSubtext: { 
+    en: 'Create your palate passport from home before your next cafe visit.', 
+    ar: 'سجّل حسابك واصنع جواز ذوقك من البيت قبل ما تروح على الكافيه.' 
+  },
+  emailLabel: { en: 'Email Address', ar: 'البريد الإلكتروني' },
+  passwordLabel: { en: 'Password', ar: 'كلمة المرور' },
+  nameLabel: { en: 'Your Name / Nickname', ar: 'اسمك أو لقبك' },
+  orGoogle: { en: 'Continue with Google', ar: 'المتابعة بحساب Google' },
+  haveAccount: { en: 'Already have an account? Sign in', ar: 'عندك حساب من قبل؟ سجّل دخولك' },
+  needAccount: { en: "Don't have an account? Create one", ar: 'جديد على فيروز؟ أنشئ حسابك بدقيقة' },
 };
 
 interface LanguageContextType {
