@@ -13,4 +13,4 @@ Last updated: September 19, 2026
 | **5** | **The 3+1 Decision Engine** | High-confidence #1 Perfect Match, 2 safe alternatives, 1 adventure pick with plain translation. | ✅ **Completed** |
 | **6** | **1-Tap Barista Ticket Sheet** | Full-screen high-contrast counter card with exact extraction parameters (ratio, dose, temp). | ✅ **Completed** |
 | **7** | **Refinement, Animations & Polish** | Framer Motion micro-interactions, responsive mobile bottom navigation pill, tactile spring transitions, and celebration effects. | ✅ **Completed** |
-| **8** | **GitHub Pages Deployment & CI/CD** | Static export (`output: 'export'`), `.nojekyll`, `CNAME` for `fayrouz.bynoor.io`, and automated GitHub Actions workflow (`deploy.yml`). | ✅ **Completed** |
+| **8** | **GitHub Pages Deployment & CI/CD** | Static export (`output: 'export'`), `.nojekyll`, `CNAME` for `fayrouz.bynoor.io`, and automated GitHub Actions workflow (`deploy.yml`). **Live at https://fayrouz.bynoor.io** | ✅ **Live on Production** |
