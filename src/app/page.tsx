@@ -121,30 +121,33 @@ export default function Home() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="flex flex-col items-center text-center py-4 sm:py-10 max-w-2xl mx-auto space-y-6 sm:space-y-8"
+        className="flex flex-col items-center w-full mx-auto space-y-6 sm:space-y-8 py-2 sm:py-6"
       >
-        {/* Brand Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs font-medium backdrop-blur-sm shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-          <span>{t('brandTagline')}</span>
-        </div>
+        {/* Centered Typographic Headline Block */}
+        <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-4 sm:space-y-5">
+          {/* Brand Pill */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs font-medium backdrop-blur-sm shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+            <span>{t('brandTagline')}</span>
+          </div>
 
-        {/* Hero Title & Bilingual Headline */}
-        <div className="space-y-4">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-parchment-50 tracking-tight leading-tight">
-            {language === 'ar' ? (
-              <>
-                طابق ذوقك مع منيو الكافيه بـ <span className="text-gold-400">٣ ثواني</span>
-              </>
-            ) : (
-              <>
-                Connect Your Palate in <span className="text-gold-400">3 Seconds</span>
-              </>
-            )}
-          </h1>
-          <p className="text-base sm:text-lg text-parchment-300/80 leading-relaxed font-sans max-w-xl mx-auto">
-            {t('brandSubtext')}
-          </p>
+          {/* Hero Title & Bilingual Headline */}
+          <div className="space-y-3 sm:space-y-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-parchment-50 tracking-tight leading-tight">
+              {language === 'ar' ? (
+                <>
+                  طابق ذوقك مع منيو الكافيه بـ <span className="text-gold-400">٣ ثواني</span>
+                </>
+              ) : (
+                <>
+                  Connect Your Palate in <span className="text-gold-400">3 Seconds</span>
+                </>
+              )}
+            </h1>
+            <p className="text-base sm:text-lg text-parchment-300/80 leading-relaxed font-sans max-w-xl mx-auto">
+              {t('brandSubtext')}
+            </p>
+          </div>
         </div>
 
         {/* Active Venue Banner / Roastery Atelier Bar */}

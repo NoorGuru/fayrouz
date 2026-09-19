@@ -38,13 +38,13 @@ export function AppShell({
           onOpenProfileModal={onOpenProfileModal}
         />
 
-        <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-6 sm:px-6 md:py-8">
+        <main className="flex-1 w-full max-w-6xl xl:max-w-7xl mx-auto px-4 py-6 sm:px-6 md:py-8 lg:px-8">
           {children}
         </main>
 
         {/* Minimal Luxury Footer */}
         <footer className="border-t border-espresso-800/80 bg-espresso-950/80 py-6 text-center text-xs text-parchment-300/50 mb-16 sm:mb-0">
-          <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
             <p>© {new Date().getFullYear()} Fayrouz (فيروز) — Specialty Coffee Matcher</p>
             <p className="text-[11px] text-gold-400/60 font-mono">fayrouz.bynoor.io</p>
           </div>

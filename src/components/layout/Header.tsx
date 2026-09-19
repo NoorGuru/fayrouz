@@ -31,7 +31,7 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gold-500/15 bg-espresso-950/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-6xl xl:max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         {/* Brand Logo & Arabic Name */}
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-gold-500/20 to-espresso-800 border border-gold-500/30 text-gold-400 shadow-inner">

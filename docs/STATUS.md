@@ -21,6 +21,8 @@ Last updated: September 19, 2026
 | **13** | **The Sensory Front Door & Obsidian FayrouzPass Metal Card** | Reimagined Home: Interactive Taste Mood preview with live dynamic match, Roastery Atelier Bar with neighborhood badges, and Apple-Card-grade Obsidian & Brushed Gold Metal FayrouzPass™ card unveiling. | ✅ **Completed** |
 | **14** | **Dynamic Palate Engine & Fluid Mood Morphing** | Overhauled `matchEngine.ts` to rank drinks by unfiltered `rawScore` before normalizing; integrated holistic `TASTE_MOOD_PROFILES`; enriched all 5 Amman roasteries with 5 authentic specialty lots (4/4 distinct winners across all moods); wrapped preview in `<AnimatePresence mode="wait">` with smooth spring transitions and active glow feedback. | ✅ **Completed** |
 | **15** | **Unified Sommelier Showcase Cockpit & Live On-Deck Palate Tuner** | Reimagined `MatchView.tsx`: Sommelier Dossier layout pairing majestic Cup Vessel & Live Palate Tuner on left with Sensory Evaluation Dossier on right; overhauled `SensoryFlavorDial.tsx` with expanded 210×180 viewBox, non-clipping geometry, and generous breathing room for the 4-axis Sensory Balance Dial; real-time recalculation on 1-tap temperature and milk adjustments. | ✅ **Completed** |
+| **16** | **Site Viewport Widening & Layout Expansion** | Upgraded main layout container and navigation header from restrictive `max-w-5xl` (1024px) to expansive luxury standard `max-w-6xl xl:max-w-7xl` (1152px–1280px) with `lg:px-8`; lifted the inner `max-w-2xl` clamp from `page.tsx`, allowing `MatchView`, the Active Roastery Bar, and Taste Mood Selector to breathe across modern screens while preserving centered typography on hero headlines. | ✅ **Completed** |
+
 
 
 
