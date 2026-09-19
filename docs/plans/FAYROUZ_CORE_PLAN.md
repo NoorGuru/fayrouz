@@ -84,7 +84,45 @@ When a customer opens Fayrouz on mobile at a participating coffee shop:
 
 ---
 
-## 4. Technical Architecture
+## 4. The JEV Decision Model (Judgment, Evaluation, Value)
+
+Fayrouz maps behavioral economics directly to the coffee ordering moment using the **JEV** model:
+
+| JEV Stage | Cognitive Trigger | Fayrouz Product Implementation |
+| :--- | :--- | :--- |
+| **J — Judgment** *(Fast Intuition & Aesthetic Perception)* | Instant emotional connection; zero cognitive strain; recognizing personal cravings. | • Warm luxury visual cues (rich espresso tones, gold badges, tactile hot/iced cards).<br>• Visual sensory dials (no long text questions).<br>• Instant recognition of flavor cravings (hazelnut, berries, dark chocolate). |
+| **E — Evaluation** *(Frictionless Risk Assessment)* | Eliminating doubt: "Will I regret spending $6 on this?"; avoiding choice overload (Hick's Law). | • **High-Confidence Score:** "98% Match for your palate" instantly validates the choice.<br>• **Rule of 3 Picks:** Cuts down 30 choices to 3 safe options to prevent analysis paralysis.<br>• **Plain-Taste Translation:** Translates "anaerobic carbonic" into "tastes like sweet peach tea".<br>• **Adventure Bridge:** Explains *why* the experiment is safe to try. |
+| **V — Value** *(Perceived Payoff & Frictionless Action)* | Tangible satisfaction; feeling like an insider; zero anxiety at the counter. | • **1-Tap Barista Ticket:** Instant high-contrast screen to show the cashier/barista across the counter.<br>• **Zero Waste Assurance:** Guaranteed customized cup matched to personal taste.<br>• **Universal Pass Identity:** Carrying a distinct Coffee Dialect across all network coffeehouses. |
+
+### Concrete JEV Use Cases
+
+#### Use Case 1: The Counter Hesitation Buster (Line Queue JEV)
+* **Context:** Customer stands in line at Ambar with 5 people behind them. The blackboard lists 25 single-origin brews and esoteric ratios. System 2 gets overwhelmed, customer feels pressured, and defaults to a safe, boring drink they don't really want.
+* **J (Judgment):** Customer opens Fayrouz on their phone → instantly sees a bold, appetizing Hero Card for `#1 Perfect Match: Oat Velvet Flat White`.
+* **E (Evaluation):** "98% Match" badge + 1 simple sentence: *"Smooth, velvety, and naturally nutty."* All hesitation and fear of regret vanish in 1 second.
+* **V (Value):** Taps "Order in 1 Tap" → shows clean barista ticket directly to the cashier. Order done in 3 seconds; customer feels smart, calm, and satisfied.
+
+#### Use Case 2: The Specialty Micro-Lot Upsell (Adventure Pick JEV)
+* **Context:** Roasters struggle to sell rare, premium $8+ micro-lots (like anaerobic Geishas or fermented naturals) because regular guests are scared they will taste "sour" or "weird".
+* **J (Judgment):** The dedicated **"🧪 Wanna Try Something New?"** card sparks positive curiosity without intimidating the user.
+* **E (Evaluation):** The **Adventure Hook** builds an intuitive bridge: *"Because you love sweet finishes, this rare lot tastes like sparkling peach tea rather than normal coffee!"* This neutralizes the customer's risk perception.
+* **V (Value):** The guest discovers an extraordinary coffee craft, the coffeehouse sells high-margin beans, and the customer feels like an enlightened coffee explorer.
+
+#### Use Case 3: The Multi-Venue Roaster Hop (Universal Identity JEV)
+* **Context:** A customer moves from Amman to Dubai, or from Ambar to Turath. They have no idea what Turath roasts or serves.
+* **J (Judgment):** Customer taps "Turath Coffeehouse" in the app selector.
+* **E (Evaluation):** Fayrouz automatically recalculates Turath's Yemeni Haraaz beans against their saved taste profile, scoring it 95% match with notes of dark fig and cardamom.
+* **V (Value):** Seamless, guaranteed delight in a totally new coffeehouse with zero onboarding friction.
+
+#### Use Case 4: 30-Second Sensory Profiling (Zero-Friction JEV)
+* **Context:** Most coffee apps require 10-minute setup, email confirmation, passwords, and 20 survey questions. Users drop off.
+* **J (Judgment):** 4 tactile, emoji-driven sensory taps (Milk texture, Flavor mood, Temperature, Strength). No keyboard typing needed.
+* **E (Evaluation):** Fast progress bar; zero risk; completed in 30 seconds without signing up.
+* **V (Value):** Instant reveal of their #1 Match and their Coffee Dialect archetype.
+
+---
+
+## 5. Technical Architecture
 
 * **Frontend:** Next.js 15 (App Router) + Tailwind CSS (Bilingual Arabic RTL & English LTR).
 * **Backend Suite:** Firebase:
@@ -97,7 +135,8 @@ When a customer opens Fayrouz on mobile at a participating coffee shop:
 
 ---
 
-## 5. Phased Execution Plan (For when work begins)
+## 6. Phased Execution Plan (For when work begins)
+
 
 ```mermaid
 flowchart TD
@@ -135,7 +174,7 @@ flowchart TD
 
 ---
 
-## 6. Firestore Database Schema
+## 7. Firestore Database Schema
 
 ```typescript
 // tastes/{tasteId}
@@ -186,7 +225,7 @@ interface Drink {
 
 ---
 
-## 7. Master AI Kickoff Prompt (For continuing in this repo)
+## 8. Master AI Kickoff Prompt (For continuing in this repo)
 
 ```text
 You are an expert full-stack engineer and UI/UX designer. We are building the real Fayrouz platform (fayrouz.bynoor.io) in this repository (NoorGuru/fayrouz).

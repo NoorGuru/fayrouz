@@ -12,13 +12,17 @@ Fayrouz eliminates coffee menu confusion. Using behavioral "System 1" design (fa
   - Coffeehouse Brand Configurations: Ambar, Turath, Qahwatna (`../fayrouz-demo/src/constants/brandConfig.js`)
   - Barista Extraction Parameters & Ratios (`../fayrouz-demo/src/components/barista/`)
 
-## Core Experience Rules
-1. **System 1 Decision (No Overthinking):** Never overwhelm the customer with 20 choices. Show exactly:
+## Core Experience Rules & JEV Framework
+1. **System 1 JEV Decision Model:**
+   - **J (Judgment):** Visual, emotional sensory appeal (roast color, hot/iced cues) with zero overthinking.
+   - **E (Evaluation):** High-confidence validation ("98% Match"), exactly 3 safe picks, and plain-language taste translation to prevent doubt.
+   - **V (Value):** 1-tap high-contrast barista order sheet, zero-risk craft satisfaction.
+2. **3 Safe Matches + 1 Adventure Pick:**
    - **3 Top Matches** (with #1 highlighted when confidence is high).
-   - **1 Adventure Pick** ("Wanna try something new?").
-2. **Plain Taste Translation:** Translate snobby coffee terms (e.g., "anaerobic natural lactic") into simple sensory feelings ("sweet wild berries and peach finish").
-3. **Zero Friction:** No mandatory login or password. Fast anonymous profile.
-4. **Bilingual:** Native Arabic (RTL) and English (LTR).
+   - **1 Adventure Pick** ("Wanna try something new?") backed by an intuitive bridge reason.
+3. **Plain Taste Translation:** Translate snobby coffee terms (e.g., "anaerobic natural lactic") into simple sensory feelings ("sweet wild berries and peach finish").
+4. **Zero Friction:** No mandatory login or password. Fast anonymous profile.
+5. **Bilingual:** Native Arabic (RTL) and English (LTR).
 
 ## Data Schema (Firestore)
 - **tastes/{tasteId}**:
