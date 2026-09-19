@@ -14,3 +14,4 @@ Last updated: September 19, 2026
 | **6** | **1-Tap Barista Ticket Sheet** | Full-screen high-contrast counter card with exact extraction parameters (ratio, dose, temp). | ✅ **Completed** |
 | **7** | **Refinement, Animations & Polish** | Framer Motion micro-interactions, responsive mobile bottom navigation pill, tactile spring transitions, and celebration effects. | ✅ **Completed** |
 | **8** | **GitHub Pages Deployment & CI/CD** | Static export (`output: 'export'`), `.nojekyll`, `CNAME` for `fayrouz.bynoor.io`, and automated GitHub Actions workflow (`deploy.yml`). **Live at https://fayrouz.bynoor.io** | ✅ **Live on Production** |
+| **9** | **Barista Terminal & Mobile PWA** | Dedicated `/ticket` Barista scanner station, PWA manifest, luxury app icons, and Apple web app support. | ✅ **Live on Production** |
