@@ -6,9 +6,11 @@ import { AuthModal } from '@/components/auth/AuthModal';
 import { ProfileModal } from '@/components/auth/ProfileModal';
 import { SensoryQuizModal } from '@/components/quiz/SensoryQuizModal';
 import { VenueSelectorModal } from '@/components/venue/VenueSelectorModal';
+import { MatchView } from '@/components/match/MatchView';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { COFFEE_SHOPS, CoffeeShop, MENU_ITEMS } from '@/data/coffeehouses';
+import { COFFEE_SHOPS, CoffeeShop, MENU_ITEMS, MenuItem } from '@/data/coffeehouses';
+import { calculatePalateMatches } from '@/utils/matchEngine';
 import { Sparkles, ShieldCheck, Zap, Award, ArrowRight, UserPlus, Coffee, RotateCcw, MapPin } from 'lucide-react';
 
 export default function Home() {
@@ -20,12 +22,27 @@ export default function Home() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
   const [isVenueModalOpen, setIsVenueModalOpen] = useState(false);
+  const [showMatches, setShowMatches] = useState(false);
 
   const handleStartQuiz = () => {
     setIsQuizModalOpen(true);
   };
 
   const currentShopDrinks = MENU_ITEMS.filter((item) => item.shopId === selectedShop.id);
+
+  // Palate 3+1 matches calculated dynamically
+  const matches = calculatePalateMatches(user?.tasteProfile, currentShopDrinks);
+
+  const handleSelectDrink = (drink: MenuItem) => {
+    // Ready for Task 6 Barista Ticket
+    alert(
+      language === 'ar'
+        ? `تم اختيار ${drink.nameAr}! سيتم فتح تذكرة الباريستا ومعايير الاستخلاص في الخطوة القادمة (Task 6).`
+        : `Selected ${drink.name}! The full-screen Barista Order Ticket & extraction specs will open in Task 6.`
+    );
+  };
+
+  const isMatchedViewActive = user?.hasCompletedQuiz || showMatches;
 
   return (
     <AppShell
@@ -34,7 +51,7 @@ export default function Home() {
       onOpenAuthModal={() => setIsAuthModalOpen(true)}
       onOpenProfileModal={() => setIsProfileModalOpen(true)}
     >
-      <div className="flex flex-col items-center text-center py-8 sm:py-16 max-w-2xl mx-auto space-y-8">
+      <div className="flex flex-col items-center text-center py-6 sm:py-12 max-w-2xl mx-auto space-y-8">
         {/* Brand Pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs font-medium backdrop-blur-sm">
           <Sparkles className="w-3.5 h-3.5 animate-pulse" />
@@ -89,10 +106,23 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Dynamic User State Card (Logged In vs New Guest) */}
-        {user ? (
-          /* Logged-in Personalized Pre-Visit Card */
-          <div className="w-full glass-panel-glow rounded-2xl p-6 sm:p-8 space-y-5 text-left border border-gold-500/30">
+        {/* ------------------------------------------------------------- */}
+        {/* MAIN BODY: 3+1 Match View OR Onboarding CTA                   */}
+        {/* ------------------------------------------------------------- */}
+        {isMatchedViewActive ? (
+          /* The System 1 "3 + 1" Match View */
+          <MatchView
+            coffeeShop={selectedShop}
+            perfectMatch={matches.perfectMatch}
+            alternatives={matches.alternatives}
+            adventurePick={matches.adventurePick}
+            onSelectDrink={handleSelectDrink}
+            onRetakeQuiz={handleStartQuiz}
+            onChangeVenue={() => setIsVenueModalOpen(true)}
+          />
+        ) : user ? (
+          /* User is logged in but hasn't taken the quiz yet */
+          <div className="w-full glass-panel-glow rounded-2xl p-6 sm:p-8 space-y-5 text-left rtl:text-right border border-gold-500/30">
             <div className="flex items-center justify-between border-b border-gold-500/15 pb-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gold-500 text-espresso-950 font-serif text-lg font-bold">
@@ -103,11 +133,6 @@ export default function Home() {
                     <span>
                       {language === 'ar' ? `أهلاً بك، ${user.name} 👋` : `Welcome back, ${user.name} 👋`}
                     </span>
-                    {user.fayrouzPassId && (
-                      <span className="font-mono text-xs px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/30 font-bold">
-                        {user.fayrouzPassId}
-                      </span>
-                    )}
                   </div>
                   <p className="text-xs text-parchment-300/70 font-mono">
                     {user.email}
@@ -123,70 +148,34 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Quiz Status inside Account */}
-            {!user.hasCompletedQuiz ? (
-              <div className="space-y-3 pt-1">
-                <p className="text-xs text-parchment-200">
-                  {language === 'ar'
-                    ? `حسابك جاهز! خطوتك التالية هي تحديد ذائقتك خلال ٣٠ ثانية لمطابقة قائمة ${selectedShop.nameAr} مع كوبك المفضل.`
-                    : `Your account is ready! Take the 30-second sensory quiz to match ${selectedShop.name}'s menu with your palate.`}
-                </p>
+            <div className="space-y-3 pt-1">
+              <p className="text-xs text-parchment-200">
+                {language === 'ar'
+                  ? `حسابك جاهز! خطوتك التالية هي تحديد ذائقتك خلال ٣٠ ثانية فقط لمطابقة قائمة ${selectedShop.nameAr} بدقة.`
+                  : `Your account is ready! Discover your coffee dialect in 30 seconds to get your tailored 3+1 matches for ${selectedShop.name}.`}
+              </p>
+              <div className="flex flex-wrap gap-2.5">
                 <button
                   onClick={handleStartQuiz}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-5 py-3 text-sm font-semibold text-espresso-950 shadow-lg hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-5 py-3 text-sm font-semibold text-espresso-950 shadow-lg hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>{t('quizTitle')}</span>
                   <ArrowRight className="w-4 h-4 rtl:rotate-180" />
                 </button>
+                <button
+                  onClick={() => setShowMatches(true)}
+                  className="flex items-center justify-center gap-2 rounded-xl border border-espresso-700 bg-espresso-950/80 px-4 py-3 text-xs text-parchment-200 hover:border-gold-500/40 cursor-pointer"
+                >
+                  <Coffee className="w-4 h-4 text-gold-400" />
+                  <span>{language === 'ar' ? 'عرض القائمة مباشرة' : 'Preview Matches'}</span>
+                </button>
               </div>
-            ) : (
-              /* Completed Quiz Pass Summary Card */
-              <div className="space-y-4 pt-1">
-                <div className="rounded-xl border border-gold-500/25 bg-espresso-950/70 p-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-gold-400 uppercase tracking-wider">
-                      {user.assignedHouse}
-                    </span>
-                    <span className="font-mono text-xs text-parchment-300/70">
-                      {user.fayrouzPassId}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-base font-serif font-bold text-parchment-50">
-                    <Award className="w-5 h-5 text-gold-400" />
-                    <span>{user.assignedDialect}</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <button
-                    onClick={() => {
-                      alert(language === 'ar' 
-                        ? `سيبدأ نظام المطابقة الفوري 3+1 لقائمة ${selectedShop.nameAr} في الخطوة القادمة (Task 5)!` 
-                        : `The 3+1 match engine for ${selectedShop.name} will be built next in Task 5!`);
-                    }}
-                    className="flex-1 flex items-center justify-center gap-2 text-xs font-semibold text-espresso-950 bg-gradient-to-r from-gold-500 to-gold-600 px-4 py-2.5 rounded-xl hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer shadow-md"
-                  >
-                    <Coffee className="w-4 h-4" />
-                    <span>
-                      {language === 'ar' ? `استكشف مطابقة ${selectedShop.nameAr}` : `View ${selectedShop.name} Matches`}
-                    </span>
-                  </button>
-
-                  <button
-                    onClick={handleStartQuiz}
-                    className="flex items-center justify-center gap-1.5 text-xs text-parchment-300 border border-espresso-700 bg-espresso-950/80 px-3 py-2.5 rounded-xl hover:border-gold-500/40 transition-colors cursor-pointer"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    <span>{t('retakeQuiz')}</span>
-                  </button>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         ) : (
           /* Guest Pre-Visit CTA Card */
-          <div className="w-full glass-panel-glow rounded-2xl p-6 sm:p-8 space-y-6 text-left">
+          <div className="w-full glass-panel-glow rounded-2xl p-6 sm:p-8 space-y-6 text-left rtl:text-right">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gold-500/15 pb-5">
               <div>
                 <h2 className="text-lg font-bold text-parchment-50 font-serif">
@@ -247,6 +236,19 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            {/* Quick Preview Matches Button for Guests */}
+            <div className="pt-2 text-center">
+              <button
+                onClick={() => setShowMatches(true)}
+                className="inline-flex items-center gap-1.5 text-xs text-gold-400 hover:text-gold-300 font-medium underline cursor-pointer"
+              >
+                <Coffee className="w-3.5 h-3.5" />
+                <span>
+                  {language === 'ar' ? `استعرض خيارات المطابقة في ${selectedShop.nameAr} كضيف` : `Preview 3+1 matches for ${selectedShop.name} as guest`}
+                </span>
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -269,7 +271,10 @@ export default function Home() {
       <SensoryQuizModal
         isOpen={isQuizModalOpen}
         onClose={() => setIsQuizModalOpen(false)}
-        onCompleted={() => setIsQuizModalOpen(false)}
+        onCompleted={() => {
+          setIsQuizModalOpen(false);
+          setShowMatches(true);
+        }}
       />
 
       {/* Coffeehouse Selector Modal */}
@@ -277,7 +282,9 @@ export default function Home() {
         isOpen={isVenueModalOpen}
         onClose={() => setIsVenueModalOpen(false)}
         selectedShopId={selectedShop.id}
-        onSelectShop={(shop) => setSelectedShop(shop)}
+        onSelectShop={(shop) => {
+          setSelectedShop(shop);
+        }}
       />
     </AppShell>
   );
