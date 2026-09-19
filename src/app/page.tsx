@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { ProfileModal } from '@/components/auth/ProfileModal';
+import { SensoryQuizModal } from '@/components/quiz/SensoryQuizModal';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { Sparkles, ShieldCheck, Zap, Award, ArrowRight, UserPlus, Coffee } from 'lucide-react';
+import { Sparkles, ShieldCheck, Zap, Award, ArrowRight, UserPlus, Coffee, RotateCcw } from 'lucide-react';
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -15,12 +16,10 @@ export default function Home() {
   const [currentVenue] = useState('Ambar Specialty Roasters');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
 
   const handleStartQuiz = () => {
-    // Ready for Task 3: The 30s JEV Sensory Quiz
-    alert(language === 'ar' 
-      ? 'سيبدأ اختبار الذوق في الخطوة القادمة (Task 3)!' 
-      : 'The 30-second sensory quiz will be built next in Task 3!');
+    setIsQuizModalOpen(true);
   };
 
   return (
@@ -70,7 +69,7 @@ export default function Home() {
                       {language === 'ar' ? `أهلاً بك، ${user.name} 👋` : `Welcome back, ${user.name} 👋`}
                     </span>
                     {user.fayrouzPassId && (
-                      <span className="font-mono text-xs px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/30">
+                      <span className="font-mono text-xs px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/30 font-bold">
                         {user.fayrouzPassId}
                       </span>
                     )}
@@ -94,8 +93,8 @@ export default function Home() {
               <div className="space-y-3 pt-1">
                 <p className="text-xs text-parchment-200">
                   {language === 'ar'
-                    ? 'حسابك جاهز! خطوتك التالية هي تحديد ذائقتك خلال ٣٠ ثانية فقط قبل طلب فنجانك القادم.'
-                    : 'Your account is ready! Discover your coffee dialect in 30 seconds before your next order.'}
+                    ? 'حسابك جاهز! خطوتك التالية هي تحديد ذائقتك خلال ٣٠ ثانية فقط لربط منيو المقاهي بكوبك المفضل.'
+                    : 'Your account is ready! Take the 30-second sensory quiz to match cafe menus with your palate.'}
                 </p>
                 <button
                   onClick={handleStartQuiz}
@@ -107,21 +106,44 @@ export default function Home() {
                 </button>
               </div>
             ) : (
-              <div className="space-y-3 pt-1">
-                <div className="flex items-center gap-2 text-xs text-gold-300">
-                  <Award className="w-4 h-4 text-gold-400" />
-                  <span className="font-semibold">{user.assignedDialect}</span>
-                  {user.assignedHouse && (
-                    <span className="text-parchment-300/70">({user.assignedHouse})</span>
-                  )}
+              /* Completed Quiz Pass Summary Card */
+              <div className="space-y-4 pt-1">
+                <div className="rounded-xl border border-gold-500/25 bg-espresso-950/70 p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-gold-400 uppercase tracking-wider">
+                      {user.assignedHouse}
+                    </span>
+                    <span className="font-mono text-xs text-parchment-300/70">
+                      {user.fayrouzPassId}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-base font-serif font-bold text-parchment-50">
+                    <Award className="w-5 h-5 text-gold-400" />
+                    <span>{user.assignedDialect}</span>
+                  </div>
                 </div>
-                <button
-                  onClick={() => setIsProfileModalOpen(true)}
-                  className="inline-flex items-center gap-2 text-xs text-parchment-200 border border-espresso-700 bg-espresso-950/80 px-4 py-2 rounded-xl hover:border-gold-500/40 cursor-pointer"
-                >
-                  <Coffee className="w-3.5 h-3.5 text-gold-400" />
-                  <span>{t('activeMenu')}</span>
-                </button>
+
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <button
+                    onClick={() => {
+                      alert(language === 'ar' 
+                        ? 'سيعرض منيو المقهى والمطابقة 3+1 في الخطوة التالية (Task 4 & 5)!' 
+                        : 'Coffeehouse menu & 3+1 matches will be connected next in Task 4 & 5!');
+                    }}
+                    className="flex-1 flex items-center justify-center gap-2 text-xs font-semibold text-espresso-950 bg-gradient-to-r from-gold-500 to-gold-600 px-4 py-2.5 rounded-xl hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer shadow-md"
+                  >
+                    <Coffee className="w-4 h-4" />
+                    <span>{language === 'ar' ? 'استكشف قائمة القهوة المتطابقة' : 'View Matched Menu'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleStartQuiz}
+                    className="flex items-center justify-center gap-1.5 text-xs text-parchment-300 border border-espresso-700 bg-espresso-950/80 px-3 py-2.5 rounded-xl hover:border-gold-500/40 transition-colors cursor-pointer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>{t('retakeQuiz')}</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -138,14 +160,23 @@ export default function Home() {
                 </p>
               </div>
 
-              <button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-4 py-2.5 text-xs font-semibold text-espresso-950 shadow-md hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer shrink-0"
-              >
-                <UserPlus className="w-4 h-4" />
-                <span>{t('signUp')}</span>
-                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={handleStartQuiz}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-gold-500/40 bg-gold-500/10 px-3.5 py-2.5 text-xs font-semibold text-gold-300 hover:bg-gold-500/20 transition-all cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+                  <span>{language === 'ar' ? 'جرّب الاختبار' : 'Take Quiz'}</span>
+                </button>
+
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-4 py-2.5 text-xs font-semibold text-espresso-950 shadow-md hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>{t('signUp')}</span>
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -195,6 +226,13 @@ export default function Home() {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         onStartQuiz={handleStartQuiz}
+      />
+
+      {/* 30-Second Sensory Quiz Modal */}
+      <SensoryQuizModal
+        isOpen={isQuizModalOpen}
+        onClose={() => setIsQuizModalOpen(false)}
+        onCompleted={() => setIsQuizModalOpen(false)}
       />
     </AppShell>
   );
