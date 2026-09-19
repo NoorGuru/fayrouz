@@ -22,11 +22,30 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
   const { updateTasteProfile } = useAuth();
 
   const [step, setStep] = useState<number>(1);
-  const [milkPreference, setMilkPreference] = useState<string>('oat');
-  const [flavorPreference, setFlavorPreference] = useState<string>('chocolate_nutty');
-  const [temperature, setTemperature] = useState<string>('hot');
-  const [intensity, setIntensity] = useState<string>('medium');
+  // No pre-selected defaults: every choice must be an explicit tap,
+  // otherwise tap-through would persist a bogus taste profile.
+  const [milkPreference, setMilkPreference] = useState<string | null>(null);
+  const [flavorPreference, setFlavorPreference] = useState<string | null>(null);
+  const [temperature, setTemperature] = useState<string | null>(null);
+  const [intensity, setIntensity] = useState<string | null>(null);
   const [dietaryFlags, setDietaryFlags] = useState<string[]>([]);
+
+  // Every take starts clean: reset on every dismiss path (X, backdrop,
+  // completion) so the next open never carries stale selections.
+  const resetQuiz = () => {
+    setStep(1);
+    setMilkPreference(null);
+    setFlavorPreference(null);
+    setTemperature(null);
+    setIntensity(null);
+    setDietaryFlags([]);
+    setResult(null);
+  };
+
+  const handleDismiss = () => {
+    resetQuiz();
+    onClose();
+  };
 
   // Generated pass state
   const [result, setResult] = useState<{
@@ -43,6 +62,9 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
   };
 
   const handleFinish = () => {
+    // Defense in depth: the Finish button is gated on intensity, but
+    // never compute a pass from incomplete (null) choices.
+    if (!milkPreference || !flavorPreference || !temperature || !intensity) return;
     const outcome = computeCoffeeDialect({
       milkPreference,
       flavorPreference,
@@ -82,8 +104,7 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
   };
 
   const handleCloseAndProceed = () => {
-    setStep(1);
-    setResult(null);
+    resetQuiz();
     onCompleted?.();
     onClose();
   };
@@ -100,7 +121,7 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleDismiss}
             className="fixed inset-0 bg-espresso-950/85 backdrop-blur-md"
           />
 
@@ -118,7 +139,7 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
 
             {/* Close Button */}
             <button
-              onClick={onClose}
+              onClick={handleDismiss}
               className="absolute top-4 end-4 rounded-lg p-1.5 text-parchment-300/60 hover:bg-espresso-800 hover:text-parchment-100 transition-colors cursor-pointer"
               aria-label="Close"
             >
@@ -385,7 +406,12 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
                       whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={() => setStep(step + 1)}
-                      className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-5 py-2.5 text-xs font-semibold text-espresso-950 shadow-md hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
+                      disabled={
+                        (step === 1 && !milkPreference) ||
+                        (step === 2 && !flavorPreference) ||
+                        (step === 3 && !temperature)
+                      }
+                      className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-5 py-2.5 text-xs font-semibold text-espresso-950 shadow-md hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <span>{language === 'ar' ? 'التالي' : 'Next'}</span>
                       <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
@@ -396,7 +422,8 @@ export function SensoryQuizModal({ isOpen, onClose, onCompleted }: SensoryQuizMo
                       whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={handleFinish}
-                      className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-5 py-2.5 text-xs font-bold text-espresso-950 shadow-lg hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer"
+                      disabled={!intensity}
+                      className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-600 px-5 py-2.5 text-xs font-bold text-espresso-950 shadow-lg hover:from-gold-400 hover:to-gold-500 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <Sparkles className="w-4 h-4" />
                       <span>{t('saveProfile')}</span>

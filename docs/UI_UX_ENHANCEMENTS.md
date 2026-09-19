@@ -29,7 +29,7 @@
   - Plan-to-confirm: add `min-h-[44px] min-w-[44px]` where needed.
   - Done when: all interactive targets meet 44px min.
 
-- [ ] **A5. Ticket stays until dismissed** (`src/components/ticket/BaristaTicketModal.tsx` ~L79)
+- [x] **A5. Ticket stays until dismissed** (implemented: no auto-close; confirmed state persists until explicit dismiss; transient state resets on open) (`src/components/ticket/BaristaTicketModal.tsx` ~L79)
   - Problem: auto-close after 1200ms, barista can't read it.
   - Plan-to-confirm: persistent "Ordered" state, user dismisses manually.
   - Done when: ticket does not auto-dismiss.
@@ -40,7 +40,7 @@
   - Add 2–3 reason chips (milk / flavor / intensity) under score.
   - Done when: each match shows its reasons.
 
-- [ ] **B2. Quiz defaults bias** (`src/components/quiz/SensoryQuizModal.tsx` ~L25-28)
+- [x] **B2. Quiz defaults bias** (implemented: null-init choices, Next/Finish gated per step, guarded handleFinish, reset-on-open) (`src/components/quiz/SensoryQuizModal.tsx` ~L25-28)
   - Problem: `oat / chocolate_nutty / hot / medium` pre-selected; tap-through = false dialect.
   - Plan-to-confirm: start unselected, require tap per step.
   - Done when: no result without explicit choices.

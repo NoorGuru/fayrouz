@@ -34,6 +34,17 @@ export function BaristaTicketModal({
   const [showQr, setShowQr] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
+  // Every dismiss resets transient state, so the next drink opens
+  // fresh — never inheriting the previous order's confirmed state.
+  // (All closes funnel through here: X button and backdrop.)
+  const handleClose = () => {
+    setIsOrdered(false);
+    setShowQr(false);
+    setCopiedPass(false);
+    setCopiedLink(false);
+    onClose();
+  };
+
   const passId = user?.fayrouzPassId || 'JO-GUEST';
   const customerName = user?.name || (language === 'ar' ? 'ضيف فيروز' : 'Special Guest');
 
@@ -76,10 +87,8 @@ export function BaristaTicketModal({
       // safe fallback
     }
 
-    setTimeout(() => {
-      setIsOrdered(false);
-      onClose();
-    }, 1200);
+    // Persistent confirmed state: the ticket stays readable at the
+    // counter until the user explicitly dismisses it (no auto-close).
   };
 
   return (
@@ -91,7 +100,7 @@ export function BaristaTicketModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="fixed inset-0 bg-espresso-950/90 backdrop-blur-md"
           />
 
@@ -117,7 +126,7 @@ export function BaristaTicketModal({
               </div>
 
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="rounded-lg p-1.5 text-parchment-300/70 hover:bg-espresso-800 hover:text-parchment-100 transition-colors cursor-pointer"
                 aria-label="Close"
               >
